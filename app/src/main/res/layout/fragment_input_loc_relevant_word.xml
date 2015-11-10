@@ -1,0 +1,34 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.niels.mobilegameofwords.inputLocRelevantWord">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
+        android:text="Input location relevant word. Input location relevant word. Input location relevant word. Input location relevant word. Input location relevant word"
+        android:gravity="center_horizontal" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_margin="50dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/locRelevantEditText"
+        android:layout_gravity="center_horizontal|top"
+        android:gravity="center_horizontal"
+        android:inputType="textCapSentences"
+        android:maxLines="1"
+        android:singleLine="true" />
+
+    <Button
+        android:id="@+id/continueToSlidersBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Continue"
+        android:layout_gravity="center" />
+
+    </LinearLayout>
+</FrameLayout>
