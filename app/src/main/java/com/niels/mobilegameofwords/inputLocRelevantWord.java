@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.app.Fragment;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -26,12 +29,16 @@ public class inputLocRelevantWord extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    View view;
+    EditText locRelevantEditText;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     private OnFragmentInteractionListener mListener;
+
+    public inputLocRelevantWord() {
+        // Required empty public constructor
+    }
 
     /**
      * Use this factory method to create a new instance of
@@ -51,8 +58,9 @@ public class inputLocRelevantWord extends Fragment {
         return fragment;
     }
 
-    public inputLocRelevantWord() {
-        // Required empty public constructor
+    public static void closeKeyboard(Context c, IBinder windowToken) {
+        InputMethodManager mgr = (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
+        mgr.hideSoftInputFromWindow(windowToken, 0);
     }
 
     @Override
@@ -63,9 +71,6 @@ public class inputLocRelevantWord extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-
-    View view;
-    EditText locRelevantEditText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,9 +83,11 @@ public class inputLocRelevantWord extends Fragment {
         continueToSlidersBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 String locRelevantWord = locRelevantEditText.getText().toString();
-                if(locRelevantEditText.length() != 0) {
+
+                if (locRelevantEditText.length() != 0) {
+                    closeKeyboard(getActivity(), locRelevantEditText.getWindowToken());
+
                     //TODO: replace with inputLocRelevantWord()
                     Fragment fragment = new rateWordsSlider();
 
@@ -89,8 +96,7 @@ public class inputLocRelevantWord extends Fragment {
                     fragmentTransaction.replace(R.id.container_body, fragment);
                     fragmentTransaction.addToBackStack(null);
                     fragmentTransaction.commit();
-                }
-                else {
+                } else {
                     locRelevantEditText.setError("A location relevant word must be provided.");
                 }
             }

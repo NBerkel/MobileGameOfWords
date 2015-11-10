@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -16,6 +17,12 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 
 /**
@@ -71,8 +78,12 @@ public class gameplay extends Fragment {
 
     View view;
     TextView currentGameWord;
+    TextView wordProgress;
     Button irrelevantBtn;
     Button relevantBtn;
+    Button finishBtn;
+    List<String> words;
+    int currentWord = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -80,8 +91,10 @@ public class gameplay extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_gameplay, container, false);
         currentGameWord = (TextView) view.findViewById(R.id.currentGameWord);
+        wordProgress = (TextView) view.findViewById(R.id.wordProgress);
         irrelevantBtn = (Button) view.findViewById(R.id.irrelevantBtn);
         relevantBtn = (Button) view.findViewById(R.id.relevantBtn);
+        finishBtn = (Button) view.findViewById(R.id.finishBtn);
 
         irrelevantBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,7 +104,21 @@ public class gameplay extends Fragment {
             @Override
             public void onClick(View v) { relevantBtnPressed(); }
         });
-        
+        finishBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { finishGame(); }
+        });
+
+        //TODO randomly determine position of irrelevant / relevant button.
+
+        //TODO collect array from JSON.
+        words = new ArrayList<>();
+        words.add("Inviting");
+        words.add("Research");
+        words.add("Light");
+        words.add("Loud");
+        words.add("Blue");
+
         startGame();
         return view;
     }
@@ -105,13 +132,36 @@ public class gameplay extends Fragment {
 
 
     private void startGame() {
-        Log.d("Niels", "STart game?");
-        currentGameWord.setText("Test????");
-        moveText();
+        nextWord();
+    }
+
+    private void nextWord() {
+        if(currentWord < words.size()) {
+            Log.d("Niels", "nextWord called");
+            Log.d("Niels", String.valueOf(words.size()));
+            Log.d("Niels", String.valueOf(currentWord));
+            currentGameWord.setText(words.get(currentWord));
+
+            wordProgress.setText("Word " + (currentWord + 1) + "/" + words.size());
+            moveText();
+        }
+        else {
+            finishGame();
+        }
+    }
+
+    private void finishGame() {
+        Fragment fragment = new finishGame();
+
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.container_body, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     private void moveText() {
-        float to_x = 0;
+        float to_x = currentGameWord.getX();
         float to_y = currentGameWord.getY() - 900;
 
         Log.d("Niels", String.valueOf(currentGameWord.getY()));
@@ -157,7 +207,8 @@ public class gameplay extends Fragment {
         @Override
         public void onAnimationEnd(Animation animation) {
             //currentGameWord.setVisibility(View.INVISIBLE);
-            currentGameWord.setText("New word");
+            currentWord++;
+            nextWord();
         }
     };
 
