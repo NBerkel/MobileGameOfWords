@@ -125,11 +125,12 @@ public class gameplay extends Fragment {
 
     private void irrelevantBtnPressed() {
         Log.d("Niels", "Irrelevant Button Pressed");
-        currentGameWord.setVisibility(View.INVISIBLE);
+        // Stop current word animation.
+        currentGameWord.clearAnimation();
     }
     private void relevantBtnPressed() {
+        currentGameWord.clearAnimation();
     }
-
 
     private void startGame() {
         nextWord();
@@ -172,7 +173,7 @@ public class gameplay extends Fragment {
         //txtTwo.getLocationInWindow(fromLoc);
         //currentGameWord.getLocationOnScreen(toLoc);
         Animations anim = new Animations();
-        Animation moveText = anim.fromAtoB(0, 0, to_x-x_from, to_y - y_from, animL, 5000);
+        Animation moveText = anim.fromAtoB(0, 0, to_x-x_from, to_y - y_from, animationListener, 5000);
 
         currentGameWord.startAnimation(moveText);
     }
@@ -184,9 +185,11 @@ public class gameplay extends Fragment {
         }
     }
 
+    Animation fromAtoB;
+
     public class Animations {
         public Animation fromAtoB(float fromX, float fromY, float toX, float toY, Animation.AnimationListener l, int speed){
-            Animation fromAtoB = new TranslateAnimation(fromX,toX,fromY,toY);
+            fromAtoB = new TranslateAnimation(fromX,toX,fromY,toY);
             fromAtoB.setDuration(speed);
             fromAtoB.setInterpolator(new DecelerateInterpolator());
             if(l != null)
@@ -195,7 +198,7 @@ public class gameplay extends Fragment {
         }
     }
 
-    Animation.AnimationListener animL = new Animation.AnimationListener() {
+    Animation.AnimationListener animationListener = new Animation.AnimationListener() {
         @Override
         public void onAnimationStart(Animation animation) {
         }

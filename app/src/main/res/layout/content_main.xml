@@ -26,6 +26,14 @@
             android:layout_marginBottom="20dp"
             android:text="Welcome to Game of Words!" />
 
+        <TextView
+            android:id="@+id/currentLocationTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginBottom="20dp"
+            android:text="Current location not applicable." />
+
 
         <TextView
             android:layout_width="wrap_content"

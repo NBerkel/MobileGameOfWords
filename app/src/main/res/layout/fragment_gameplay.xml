@@ -2,12 +2,22 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" tools:context="com.niels.mobilegameofwords.gameplay">
 
+
+
     <Button
         android:layout_width="106dp"
         android:layout_height="wrap_content"
         android:text="Irrelevant"
         android:id="@+id/irrelevantBtn"
         android:layout_gravity="left|center_vertical" />
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginLeft="-100dp"
+        android:src="@mipmap/ic_circle"
+        android:layout_gravity="left|center_vertical" />
+
 
     <Button
         android:layout_width="106dp"
@@ -39,5 +49,7 @@
         android:text="Finish"
         android:id="@+id/finishBtn"
         android:layout_gravity="right|bottom" />
+
+
 
 </FrameLayout>

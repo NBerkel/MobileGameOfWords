@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,7 +20,8 @@ import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
-    private OnFragmentInteractionListener mListener;
+    String currentLocation;
+    TextView currentLocationTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +30,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        getJSONInfo();
-
+        currentLocationTextView = (TextView) findViewById(R.id.currentLocationTextView);
         Button playGameBtn = (Button) findViewById(R.id.playGameBtn);
         playGameBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,9 +48,33 @@ public class MainActivity extends AppCompatActivity {
                 fragmentTransaction.commit();
             }
         });
+
+        boolean locationFound = getCurrentLocation();
+        if(!locationFound ) {
+            playGameBtn.setEnabled(false);
+        }
+        else {
+            getJSONInfo(currentLocation);
+            playGameBtn.setEnabled(true);
+        }
     }
 
-    private void getJSONInfo() {
+    private boolean getCurrentLocation() {
+        boolean a = true;
+        if(a){
+            // Beacon detection here.
+            currentLocation = "UniversityA";
+            currentLocationTextView.setText(currentLocation);
+        }
+        else {
+            currentLocation = "";
+            currentLocationTextView.setText("Current location not applicable.");
+            a = false;
+        }
+        return a;
+    }
+
+    private void getJSONInfo(String currentLocation) {
         String strJson = "";
 
         try {

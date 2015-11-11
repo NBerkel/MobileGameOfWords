@@ -38,45 +38,19 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:orientation="horizontal"
-                    android:weightSum="1">
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp">
 
                     <TextView
                         android:layout_width="72dp"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start"
                         android:text="Highly irrelevant"
-                        android:textAlignment="textStart"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="72dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:layout_weight="0.2"
-                        android:text="Irrelevant"
-                        android:textAlignment="textStart"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="72dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="Somewhat relevant"
-                        android:textAlignment="center"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="72dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:layout_weight="0.2"
-                        android:text="Relevant"
-                        android:textAlignment="textEnd"
+                        android:layout_alignParentLeft="true"
                         android:textSize="12sp" />
 
                     <TextView
@@ -85,15 +59,16 @@
                         android:layout_gravity="end"
                         android:text="Highly relevant"
                         android:textAlignment="textEnd"
+                        android:layout_alignParentRight="true"
                         android:textSize="12sp" />
-                </LinearLayout>
+                </RelativeLayout>
 
                 <SeekBar
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
-                    android:max="4"
-                    android:progress="2" />
+                    android:max="100"
+                    android:progress="50" />
             </LinearLayout>
 
             <TextView
@@ -111,68 +86,37 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:orientation="horizontal"
-                    android:weightSum="1">
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp">
 
                     <TextView
-                        android:id="@+id/answerNegative5"
                         android:layout_width="72dp"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start"
                         android:text="Highly irrelevant"
-                        android:textAlignment="textStart"
+                        android:layout_alignParentLeft="true"
                         android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/answerNegative4"
-                        android:layout_width="72dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:layout_weight="0.2"
-                        android:text="Irrelevant"
-                        android:textAlignment="textStart"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:id="@+id/answerNegative3"
-                        android:layout_width="72dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="Somewhat relevant"
-                        android:textAlignment="center"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:id="@+id/answerNegative2"
-                        android:layout_width="72dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:layout_weight="0.2"
-                        android:text="Relevant"
-                        android:textAlignment="textEnd"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:id="@+id/answerNegative1"
                         android:layout_width="72dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
                         android:text="Highly relevant"
                         android:textAlignment="textEnd"
+                        android:layout_alignParentRight="true"
                         android:textSize="12sp" />
-                </LinearLayout>
+                </RelativeLayout>
 
                 <SeekBar
-                    android:id="@+id/intensitySlider"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
-                    android:max="4"
-                    android:progress="2" />
+                    android:max="100"
+                    android:progress="50" />
             </LinearLayout>
 
             <TextView
@@ -190,45 +134,19 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:orientation="horizontal"
-                    android:weightSum="1">
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp">
 
                     <TextView
                         android:layout_width="72dp"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start"
                         android:text="Highly irrelevant"
-                        android:textAlignment="textStart"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="72dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:layout_weight="0.2"
-                        android:text="Irrelevant"
-                        android:textAlignment="textStart"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="72dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="Somewhat relevant"
-                        android:textAlignment="center"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="72dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:layout_weight="0.2"
-                        android:text="Relevant"
-                        android:textAlignment="textEnd"
+                        android:layout_alignParentLeft="true"
                         android:textSize="12sp" />
 
                     <TextView
@@ -237,15 +155,16 @@
                         android:layout_gravity="end"
                         android:text="Highly relevant"
                         android:textAlignment="textEnd"
+                        android:layout_alignParentRight="true"
                         android:textSize="12sp" />
-                </LinearLayout>
+                </RelativeLayout>
 
                 <SeekBar
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0"
-                    android:max="4"
-                    android:progress="2" />
+                    android:max="100"
+                    android:progress="50" />
             </LinearLayout>
 
             <Button
