@@ -12,10 +12,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -38,12 +41,41 @@ public class gameplay extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    View view;
+    TextView currentGameWord;
+    TextView wordProgress;
+    Button irrelevantBtn;
+    Button relevantBtn;
+    Button finishBtn;
+    ImageView leftCircleImageView;
+    ImageView rightCircleImageView;
+    List<String> words;
+    Animations anim = new Animations();
+    int currentWord = 0;
+    Animation fromAtoB;
+    Animation.AnimationListener animationListener = new Animation.AnimationListener() {
+        @Override
+        public void onAnimationStart(Animation animation) {
+        }
 
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            //currentGameWord.setVisibility(View.INVISIBLE);
+            currentWord++;
+            nextWord();
+        }
+    };
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     private OnFragmentInteractionListener mListener;
+    public gameplay() {
+        // Required empty public constructor
+    }
 
     /**
      * Use this factory method to create a new instance of
@@ -63,10 +95,6 @@ public class gameplay extends Fragment {
         return fragment;
     }
 
-    public gameplay() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,15 +104,6 @@ public class gameplay extends Fragment {
         }
     }
 
-    View view;
-    TextView currentGameWord;
-    TextView wordProgress;
-    Button irrelevantBtn;
-    Button relevantBtn;
-    Button finishBtn;
-    List<String> words;
-    int currentWord = 0;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -92,21 +111,28 @@ public class gameplay extends Fragment {
         view = inflater.inflate(R.layout.fragment_gameplay, container, false);
         currentGameWord = (TextView) view.findViewById(R.id.currentGameWord);
         wordProgress = (TextView) view.findViewById(R.id.wordProgress);
-        irrelevantBtn = (Button) view.findViewById(R.id.irrelevantBtn);
-        relevantBtn = (Button) view.findViewById(R.id.relevantBtn);
         finishBtn = (Button) view.findViewById(R.id.finishBtn);
+        leftCircleImageView = (ImageView) view.findViewById(R.id.leftCircleImageView);
+        rightCircleImageView = (ImageView) view.findViewById(R.id.rightCircleImageView);
 
-        irrelevantBtn.setOnClickListener(new View.OnClickListener() {
+        rightCircleImageView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) { irrelevantBtnPressed(); }
+            public void onClick(View v) {
+                relevantBtnPressed();
+            }
         });
-        relevantBtn.setOnClickListener(new View.OnClickListener() {
+        leftCircleImageView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) { relevantBtnPressed(); }
+            public void onClick(View v) {
+                irrelevantBtnPressed();
+            }
         });
+
         finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) { finishGame(); }
+            public void onClick(View v) {
+                finishGame();
+            }
         });
 
         //TODO randomly determine position of irrelevant / relevant button.
@@ -125,11 +151,12 @@ public class gameplay extends Fragment {
 
     private void irrelevantBtnPressed() {
         Log.d("Niels", "Irrelevant Button Pressed");
-        // Stop current word animation.
-        currentGameWord.clearAnimation();
+        anim.scaleView(leftCircleImageView, 1f, 1.2f, 400);
     }
+
     private void relevantBtnPressed() {
-        currentGameWord.clearAnimation();
+        Log.d("Niels", "Relevant Button Pressed");
+        anim.scaleView(rightCircleImageView, 1f, 1.2f, 400);
     }
 
     private void startGame() {
@@ -137,7 +164,7 @@ public class gameplay extends Fragment {
     }
 
     private void nextWord() {
-        if(currentWord < words.size()) {
+        if (currentWord < words.size()) {
             Log.d("Niels", "nextWord called");
             Log.d("Niels", String.valueOf(words.size()));
             Log.d("Niels", String.valueOf(currentWord));
@@ -145,8 +172,7 @@ public class gameplay extends Fragment {
 
             wordProgress.setText("Word " + (currentWord + 1) + "/" + words.size());
             moveText();
-        }
-        else {
+        } else {
             finishGame();
         }
     }
@@ -172,8 +198,8 @@ public class gameplay extends Fragment {
         float y_from = currentGameWord.getY();
         //txtTwo.getLocationInWindow(fromLoc);
         //currentGameWord.getLocationOnScreen(toLoc);
-        Animations anim = new Animations();
-        Animation moveText = anim.fromAtoB(0, 0, to_x-x_from, to_y - y_from, animationListener, 5000);
+
+        Animation moveText = anim.fromAtoB(0, 0, to_x - x_from, to_y - y_from, animationListener, 5000);
 
         currentGameWord.startAnimation(moveText);
     }
@@ -184,36 +210,6 @@ public class gameplay extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
-
-    Animation fromAtoB;
-
-    public class Animations {
-        public Animation fromAtoB(float fromX, float fromY, float toX, float toY, Animation.AnimationListener l, int speed){
-            fromAtoB = new TranslateAnimation(fromX,toX,fromY,toY);
-            fromAtoB.setDuration(speed);
-            fromAtoB.setInterpolator(new DecelerateInterpolator());
-            if(l != null)
-                fromAtoB.setAnimationListener(l);
-            return fromAtoB;
-        }
-    }
-
-    Animation.AnimationListener animationListener = new Animation.AnimationListener() {
-        @Override
-        public void onAnimationStart(Animation animation) {
-        }
-
-        @Override
-        public void onAnimationRepeat(Animation animation) {
-        }
-
-        @Override
-        public void onAnimationEnd(Animation animation) {
-            //currentGameWord.setVisibility(View.INVISIBLE);
-            currentWord++;
-            nextWord();
-        }
-    };
 
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -238,5 +234,54 @@ public class gameplay extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+    }
+
+    public class Animations {
+        public Animation fromAtoB(float fromX, float fromY, float toX, float toY, Animation.AnimationListener l, int speed) {
+            fromAtoB = new TranslateAnimation(fromX, toX, fromY, toY);
+            fromAtoB.setDuration(speed);
+            fromAtoB.setInterpolator(new DecelerateInterpolator());
+            if (l != null)
+                fromAtoB.setAnimationListener(l);
+            return fromAtoB;
+        }
+
+        public void scaleView(final View v, final float startScale, final float endScale, final int speed) {
+            final Animation anim = new ScaleAnimation(
+                    startScale, endScale, // Start and end values for the X axis scaling
+                    startScale, endScale, // Start and end values for the Y axis scaling
+                    Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
+                    Animation.RELATIVE_TO_SELF, 0.5f); // Pivot point of Y scaling
+            anim.setFillAfter(true); // Needed to keep the result of the animation
+            anim.setInterpolator(new DecelerateInterpolator());
+            anim.setDuration(speed);
+            anim.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    // Reverse animation
+                    Animation reverseAnim = new ScaleAnimation(
+                            endScale, startScale, // Start and end values for the X axis scaling
+                            endScale, startScale, // Start and end values for the Y axis scaling
+                            Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
+                            Animation.RELATIVE_TO_SELF, 0.5f); // Pivot point of Y scaling
+                    reverseAnim.setFillAfter(true); // Needed to keep the result of the animation
+                    reverseAnim.setInterpolator(new DecelerateInterpolator());
+                    reverseAnim.setDuration(speed / 2);
+                    v.startAnimation(reverseAnim);
+
+                    // Stop current word animation and go to next word.
+                    currentGameWord.clearAnimation();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                }
+            });
+            v.startAnimation(anim);
+        }
     }
 }

@@ -3,28 +3,22 @@
     android:layout_height="match_parent" tools:context="com.niels.mobilegameofwords.gameplay">
 
 
-
-    <Button
-        android:layout_width="106dp"
-        android:layout_height="wrap_content"
-        android:text="Irrelevant"
-        android:id="@+id/irrelevantBtn"
-        android:layout_gravity="left|center_vertical" />
-
     <ImageView
+        android:id="@+id/leftCircleImageView"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_marginLeft="-100dp"
         android:src="@mipmap/ic_circle"
         android:layout_gravity="left|center_vertical" />
 
-
-    <Button
-        android:layout_width="106dp"
-        android:layout_height="wrap_content"
-        android:text="Relevant"
-        android:id="@+id/relevantBtn"
+    <ImageView
+        android:id="@+id/rightCircleImageView"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginRight="-100dp"
+        android:src="@mipmap/ic_circle"
         android:layout_gravity="right|center_vertical" />
+
 
     <TextView
         android:layout_width="wrap_content"
@@ -50,6 +44,21 @@
         android:id="@+id/finishBtn"
         android:layout_gravity="right|bottom" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Irrelevant"
+        android:textColor="@android:color/white"
+        android:layout_marginLeft="10dp"
+        android:layout_gravity="left|center_vertical" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Relevant"
+        android:textColor="@android:color/white"
+        android:layout_marginRight="10dp"
+        android:layout_gravity="right|center_vertical" />
 
 
 </FrameLayout>
