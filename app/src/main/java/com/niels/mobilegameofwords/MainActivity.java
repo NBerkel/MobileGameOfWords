@@ -16,6 +16,13 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,8 +36,14 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static JSONArray sliderWords = new JSONArray();
     String currentLocation;
     TextView currentLocationTextView;
+    Button playGameBtn;
+
+    public static JSONArray getsliderWords() {
+        return sliderWords;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         //setSupportActionBar(toolbar);
 
         currentLocationTextView = (TextView) findViewById(R.id.currentLocationTextView);
-        Button playGameBtn = (Button) findViewById(R.id.playGameBtn);
+        playGameBtn = (Button) findViewById(R.id.playGameBtn);
         playGameBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,74 +71,46 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        getData getData = new getData();
-        getData.execute();
+        getCriteria();
 
-        boolean locationFound = getCurrentLocation();
-        if(!locationFound ) {
-            playGameBtn.setEnabled(false);
-        }
-        else {
-            //getJSONInfo(currentLocation);
-            playGameBtn.setEnabled(true);
-        }
+    }
+
+    private void getCriteria() {
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://dss.simohosio.com/api/getcriteria.php?question_id=8";
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        getJSONInfo(response);
+                        playGameBtn.setEnabled(true);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                playGameBtn.setEnabled(false);
+                Log.d("GameOfWords", String.valueOf(error));
+            }
+        });
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
     }
 
     private boolean getCurrentLocation() {
         boolean a = true;
-        if(a){
+        if (a) {
             // Beacon detection here.
             currentLocation = "UniversityA";
             currentLocationTextView.setText(currentLocation);
-        }
-        else {
+        } else {
             currentLocation = "";
             currentLocationTextView.setText("Current location not applicable.");
             a = false;
         }
         return a;
-    }
-
-
-    public class getData extends AsyncTask<String, String, String> {
-        HttpURLConnection urlConnection;
-
-        @Override
-        protected String doInBackground(String... args) {
-            StringBuilder result = new StringBuilder();
-
-            try {
-                URL url = new URL("http://dss.simohosio.com/api/getcriteria.php?question_id=7");
-                urlConnection = (HttpURLConnection) url.openConnection();
-                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    result.append(line);
-                }
-
-            }catch( Exception e) {
-                e.printStackTrace();
-            }
-            finally {
-                urlConnection.disconnect();
-            }
-            return result.toString();
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            getJSONInfo(result);
-        }
-    }
-
-
-
-    public static JSONArray sliderWords = new JSONArray();
-    public static JSONArray getsliderWords() {
-        return sliderWords;
     }
 
     private void getJSONInfo(String currentLocation) {

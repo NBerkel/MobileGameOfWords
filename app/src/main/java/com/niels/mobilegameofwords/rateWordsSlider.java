@@ -23,6 +23,16 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,6 +43,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 /**
@@ -112,7 +126,7 @@ public class rateWordsSlider extends Fragment {
         LinearLayout.LayoutParams buttonLayoutParams;
         buttonLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         buttonLayoutParams.gravity = Gravity.CENTER_HORIZONTAL;
-        buttonLayoutParams.setMargins(0,34,0,0);
+        buttonLayoutParams.setMargins(0, 34, 0, 0);
         sliderLayoutHolder.addView(startGameBtn, buttonLayoutParams);
         startGameBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,61 +143,76 @@ public class rateWordsSlider extends Fragment {
         return view;
     }
 
+    int question_id = 8;
+
     private void transferAnswers() throws JSONException {
         JSONArray sliderAnswers = new JSONArray();
-
+        JSONArray sliderWords = MainActivity.sliderWords;
+        int j = 0;
         for (int i = 0; i < sliderLayoutHolder.getChildCount(); i++) {
             View v = sliderLayoutHolder.getChildAt(i);
             if (v instanceof SeekBar) {
-                int value = ((SeekBar) v).getProgress();
-                JSONObject sliderAnswer = new JSONObject();
-                sliderAnswer.put("Question", 2);
-                sliderAnswer.put("Location", 2);
-                sliderAnswer.put("Criteria", 2);
-                sliderAnswer.put("Slider", value);
+                JSONArray sliderAnswer = new JSONArray();
 
-                Log.d("Niels", String.valueOf(value));
+                Log.d("NIELS", sliderWords.getJSONObject(j).getString("criterion_id"));
+
+                int value = ((SeekBar) v).getProgress();
+
+                sliderAnswer.put(String.valueOf(question_id));
+                sliderAnswer.put(String.valueOf(490));
+                sliderAnswer.put(sliderWords.getJSONObject(j).getString("criterion_id"));
+                sliderAnswer.put(String.valueOf(value));
 
                 sliderAnswers.put(sliderAnswer);
+
+                j++;
+            } else {
             }
-            else {}
         }
         String sliderAnswersString = sliderAnswers.toString();
 
-        sendData sendData = new sendData(sliderAnswersString);
-        sendData.execute();
+        sendVolley(sliderAnswersString);
     }
 
-    public class sendData extends AsyncTask<String, String, String> {
-        HttpURLConnection urlConnection;
+    private void sendVolley(final String sliderAnswersString) {
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        String url = "http://dss.simohosio.com/api/postrating.php";
+        //String url = "http://requestb.in/r8hy9er8";
 
-        String sliderAnswersString;
-
-        public sendData(String s) {
-            sliderAnswersString = s;
-        }
-
-        @Override
-        protected String doInBackground(String... args) {
-            try {
-                URL url = new URL("http://dss.simohosio.com/api/getcriteria.php?question_id=7");
-                urlConnection = (HttpURLConnection) url.openConnection();
-
-
-            }catch( Exception e) {
-                e.printStackTrace();
+        StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("GameOfWords", response.toString());
             }
-            finally {
-                urlConnection.disconnect();
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("GameOfWords", "Error: " + error.getMessage());
+                Log.d("GameOfWords", "" + error.getMessage() + "," + error.toString());
             }
-            //return result.toString();
-            return "";
-        }
+        }) {
+            /** Passing some request headers * */
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                headers.put("charset", "utf-8");
+                return headers;
+            }
 
-        @Override
-        protected void onPostExecute(String result) {
-            //getJSONInfo(result);
-        }
+            @Override
+            protected Map<String, String> getParams() {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("json_ratings", sliderAnswersString);
+                params.put("user_id", "some_id");
+                params.put("meta", "META info");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        queue.add(sr);
     }
 
     private void startGame() {
