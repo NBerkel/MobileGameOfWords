@@ -19,13 +19,31 @@ import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
 
 /**
@@ -137,16 +155,52 @@ public class gameplay extends Fragment {
 
         //TODO randomly determine position of irrelevant / relevant button.
 
-        //TODO collect array from JSON.
-        words = new ArrayList<>();
-        words.add("Inviting");
-        words.add("Research");
-        words.add("Light");
-        words.add("Loud");
-        words.add("Blue");
+        getGameWords();
 
-        startGame();
+
         return view;
+    }
+
+    private void getGameWords() {
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        String url = MainActivity.getIP() + "getwords.php";
+
+        // Collect word list
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        setGameWords(response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("GameOfWords", String.valueOf(error));
+            }
+        });
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+    }
+
+    private void setGameWords(String response) {
+        words = new ArrayList<>();
+
+        try {
+            JSONArray strJson = new JSONArray(response);
+            for (int i = 0; i < strJson.length(); i++) {
+                JSONObject object = strJson.getJSONObject(i);
+
+                JSONObject word = new JSONObject();
+                word.put("word", object.getString("word"));
+                word.put("number_of_times_voted_relevant", object.getString("number_of_times_voted_relevant"));
+                word.put("number_of_times_voted_irrelevant", object.getString("number_of_times_voted_irrelevant"));
+                words.add(object.getString("word"));
+            }
+            startGame();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            //TODO block person from starting game?
+        }
     }
 
     private void irrelevantBtnPressed() {
@@ -180,11 +234,72 @@ public class gameplay extends Fragment {
     private void finishGame() {
         Fragment fragment = new finishGame();
 
+        try {
+            transferWordRatings();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.container_body, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+    }
+
+    JSONArray wordRatings= new JSONArray();
+
+    private void transferWordRatings() throws JSONException {
+        //JSONArray sliderWords = MainActivity.sliderWords;
+        for (int i = 0; i < 10; i++) {
+            //TODO
+            JSONObject wordAnswer = new JSONObject();
+
+            wordAnswer.put("word","eveilgenius");
+            wordAnswer.put("rating","relevant");
+
+            wordRatings.put(wordAnswer);
+        }
+        String wordRatingsString = wordRatings.toString();
+        sendVolley(wordRatingsString);
+    }
+
+    private void sendVolley(final String wordRatingsString) {
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        String url = "http://gow.ddns.net/updatewordlist.php";
+
+        StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("GameOfWords", response.toString());
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("GameOfWords", "Error: " + error.getMessage());
+                Log.d("GameOfWords", "" + error.getMessage() + "," + error.toString());
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                HashMap<String, String> params = new HashMap<String, String>();
+                Log.d("Niels", wordRatingsString);
+                params.put("json", wordRatingsString);
+                return params;
+            }
+
+            /** Passing some request headers * */
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String,String> params = new HashMap<String, String>();
+                params.put("Content-Type","application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        queue.add(sr);
     }
 
     private void moveText() {

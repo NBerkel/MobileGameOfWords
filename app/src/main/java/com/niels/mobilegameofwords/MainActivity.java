@@ -1,5 +1,6 @@
 package com.niels.mobilegameofwords;
 
+import android.app.Application;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
@@ -9,11 +10,13 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -27,19 +30,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
 public class MainActivity extends AppCompatActivity {
 
     public static JSONArray sliderWords = new JSONArray();
     String currentLocation;
     TextView currentLocationTextView;
     Button playGameBtn;
+    static String ip = "http://gow.ddns.net/";
+
+    public static String getIP() {
+        return ip;
+    }
+
 
     public static JSONArray getsliderWords() {
         return sliderWords;
@@ -72,7 +74,63 @@ public class MainActivity extends AppCompatActivity {
         });
 
         getCriteria();
+        getLeaderboard();
+    }
 
+    private void getLeaderboard() {
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = ip + "leaderboard.php";
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        setLeaderboardText(response);
+                        playGameBtn.setEnabled(true);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                playGameBtn.setEnabled(false);
+                Log.d("GameOfWords", String.valueOf(error));
+            }
+        });
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+    }
+
+    private void setLeaderboardText(String leaderboardResponse) {
+        try {
+            JSONArray strJson = new JSONArray(leaderboardResponse);
+
+            LinearLayout leaderboardUsersLayout = (LinearLayout) findViewById(R.id.leaderboardUsersLayout);
+            LinearLayout leaderboardScoresLayout = (LinearLayout) findViewById(R.id.leaderboardScoresLayout);
+
+            for (int i = 0; i < strJson.length(); i++) {
+                JSONObject object = strJson.getJSONObject(i);
+
+                JSONObject leaderboard_user = new JSONObject();
+                leaderboard_user.put("nickname", object.getString("nickname"));
+                leaderboard_user.put("score", object.getString("score"));
+
+                RelativeLayout.LayoutParams userScoreLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+                TextView userNickname = new TextView(this);
+                userScoreLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_START);
+                userNickname.setText(object.getString("nickname"));
+                leaderboardUsersLayout.addView(userNickname, userScoreLayoutParams);
+
+                TextView userScore = new TextView(this);
+                userScoreLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_START);
+                userScore.setText(object.getString("score"));
+                leaderboardScoresLayout.addView(userScore,userScoreLayoutParams);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            //TODO block person from starting game?
+        }
     }
 
     private void getCriteria() {

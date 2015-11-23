@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,18 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -84,8 +97,14 @@ public class inputLocRelevantWord extends Fragment {
             @Override
             public void onClick(View v) {
                 String locRelevantWord = locRelevantEditText.getText().toString();
+                ((GameOfWords) getActivity().getApplication()).setLocRelevantWord(locRelevantWord);
 
                 if (locRelevantEditText.length() != 0) {
+                    try {
+                        sendNewWord(locRelevantWord);
+                    } catch (Exception e) {}
+
+
                     closeKeyboard(getActivity(), locRelevantEditText.getWindowToken());
 
                     //TODO: replace with inputLocRelevantWord()
@@ -103,6 +122,43 @@ public class inputLocRelevantWord extends Fragment {
         });
 
         return view;
+    }
+
+    private void sendNewWord(final String locRelevantWord) {
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        String url = MainActivity.getIP() + "addnewword.php";
+
+        StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("GameOfWords", response.toString());
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("GameOfWords", "Error: " + error.getMessage());
+                Log.d("GameOfWords", "" + error.getMessage() + "," + error.toString());
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("dataString", locRelevantWord);
+                return params;
+            }
+
+            /** Passing some request headers * */
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String,String> params = new HashMap<String, String>();
+                params.put("Content-Type","application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        queue.add(sr);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
