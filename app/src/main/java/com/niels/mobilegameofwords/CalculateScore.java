@@ -1,0 +1,81 @@
+package com.niels.mobilegameofwords;
+
+import android.content.Context;
+import android.util.Log;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+
+import java.util.HashMap;
+import java.util.Map;
+
+
+/**
+ * Created by niels on 01/12/15.
+ */
+public class CalculateScore {
+
+    public void CalculateScore(String userAnswers) {
+        sendVolley(userAnswers);
+    }
+
+    private int achievedScore;
+
+    private Context mContext;
+
+    public CalculateScore(Context context) {
+            mContext = context;
+    }
+
+    private void sendVolley(final String userAnswers) {
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(mContext);
+        String url = MainActivity.getIP() + "calculatescore.php";
+
+        StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("GameOfWords", response.toString());
+                achievedScore = Integer.parseInt(response);
+                UpdateScore updateScore = new UpdateScore(mContext);
+                try {
+                    updateScore.UpdateScoreDB(achievedScore);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("GameOfWords", "Error: " + error.getMessage());
+                Log.d("GameOfWords", "" + error.getMessage() + "," + error.toString());
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("json_words", userAnswers);
+                return params;
+            }
+
+            /** Passing some request headers * */
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String,String> params = new HashMap<String, String>();
+                params.put("Content-Type","application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        queue.add(sr);
+    }
+}

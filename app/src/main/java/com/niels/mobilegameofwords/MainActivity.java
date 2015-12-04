@@ -1,23 +1,19 @@
 package com.niels.mobilegameofwords;
 
-import android.app.Application;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -30,18 +26,35 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     public static JSONArray sliderWords = new JSONArray();
+    public static String nickname;
+
+    static String ip = "http://gow.ddns.net/";
     String currentLocation;
     TextView currentLocationTextView;
+    TextView welcomeTextView;
     Button playGameBtn;
-    static String ip = "http://gow.ddns.net/";
+    EditText usernameEditText;
+    Boolean userAlreadyExists = false;
+    String fileName = "nicknamem";
 
-    public static String getIP() {
-        return ip;
+    DBGetLeaderboard dbGetLeaderboard = new DBGetLeaderboard(this);
+
+    public static String getIP() { return ip; }
+
+    public static String getNickname() {
+        return nickname;
     }
-
 
     public static JSONArray getsliderWords() {
         return sliderWords;
@@ -51,86 +64,121 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
 
-        currentLocationTextView = (TextView) findViewById(R.id.currentLocationTextView);
+        welcomeTextView = (TextView) findViewById(R.id.welcomeTextView);
+        usernameEditText = (EditText) findViewById(R.id.usernameEditText);
         playGameBtn = (Button) findViewById(R.id.playGameBtn);
+
+        dbGetLeaderboard.getLeaderboard(getApplicationContext());
+
+        checkUsername();
+        getCriteria();
+
         playGameBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LinearLayout intro_text = (LinearLayout) findViewById(R.id.intro_text);
-                intro_text.setVisibility(View.GONE);
+                if (userAlreadyExists == false) {
+                    if (checkUsernameInput() == true) {
+                        // Write text file with username
+                        String content = String.valueOf(usernameEditText.getText());
 
-                //TODO: replace with inputLocRelevantWord()
-                Fragment fragment = new inputLocRelevantWord();
-
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.container_body, fragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-            }
-        });
-
-        getCriteria();
-        getLeaderboard();
-    }
-
-    private void getLeaderboard() {
-        // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = ip + "leaderboard.php";
-
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        setLeaderboardText(response);
-                        playGameBtn.setEnabled(true);
+                        Log.d("Niels", "Create file");
+                        FileOutputStream outputStream;
+                        try {
+                            outputStream = openFileOutput(fileName, Context.MODE_PRIVATE);
+                            outputStream.write(content.getBytes());
+                            outputStream.close();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        startGame();
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                playGameBtn.setEnabled(false);
-                Log.d("GameOfWords", String.valueOf(error));
+                } else {
+                    startGame();
+                }
             }
         });
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
     }
 
-    private void setLeaderboardText(String leaderboardResponse) {
-        try {
-            JSONArray strJson = new JSONArray(leaderboardResponse);
+    private void startGame() {
+        LinearLayout intro_text = (LinearLayout) findViewById(R.id.intro_text);
+        intro_text.setVisibility(View.GONE);
 
-            LinearLayout leaderboardUsersLayout = (LinearLayout) findViewById(R.id.leaderboardUsersLayout);
-            LinearLayout leaderboardScoresLayout = (LinearLayout) findViewById(R.id.leaderboardScoresLayout);
+        //TODO: replace with inputLocRelevantWord()
+        Fragment fragment = new inputLocRelevantWord();
 
-            for (int i = 0; i < strJson.length(); i++) {
-                JSONObject object = strJson.getJSONObject(i);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.container_body, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
 
-                JSONObject leaderboard_user = new JSONObject();
-                leaderboard_user.put("nickname", object.getString("nickname"));
-                leaderboard_user.put("score", object.getString("score"));
+    private void checkUsername() {
+        //check if username already exist, else offer possibility to enter new username
+        if (fileExistance(fileName) == true) {
+            // remove username input
+            LinearLayout linearLayoutUsernameInput = (LinearLayout) findViewById(R.id.linearLayoutUsernameInput);
+            linearLayoutUsernameInput.setVisibility(View.GONE);
 
-                RelativeLayout.LayoutParams userScoreLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            Log.d("Niels", "File exist, lets read it!");
+            userAlreadyExists = true;
+            BufferedReader input;
+            File file;
+            try {
+                file = new File(getFilesDir(), fileName);
 
-                TextView userNickname = new TextView(this);
-                userScoreLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_START);
-                userNickname.setText(object.getString("nickname"));
-                leaderboardUsersLayout.addView(userNickname, userScoreLayoutParams);
+                input = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+                String line;
+                StringBuffer buffer = new StringBuffer();
+                while ((line = input.readLine()) != null) {
+                    buffer.append(line);
+                }
+                Log.d("Niels", "File content " + buffer.toString());
 
-                TextView userScore = new TextView(this);
-                userScoreLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_START);
-                userScore.setText(object.getString("score"));
-                leaderboardScoresLayout.addView(userScore,userScoreLayoutParams);
+                nickname = buffer.toString();
+                welcomeTextView.setText("Welcome back " + nickname + "!");
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            //TODO block person from starting game?
+        } else {
+            userAlreadyExists = false;
         }
+    }
+
+    private boolean checkUsernameInput() {
+        String userNameText = usernameEditText.getText().toString();
+        if (userNameText.matches("")) {
+            //Empty, no username provided.
+            Toast.makeText(this, "You did not enter a username", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        ArrayList nicknames = dbGetLeaderboard.nicknames;
+        for (int i = 0; i < nicknames.size(); i++) {
+            System.out.println(nicknames.get(i));
+
+
+            String nickname = "";
+            JSONObject jObj = (JSONObject) nicknames.get(i);
+            try {
+                nickname = jObj.getString("nicknames");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            if (userNameText.equals(nickname)) {
+                Toast.makeText(this, "Username already in use", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+        }
+        return true;
+    }
+
+    public boolean fileExistance(String fname) {
+        File file = getBaseContext().getFileStreamPath(fname);
+        return file.exists();
     }
 
     private void getCriteria() {
@@ -186,27 +234,5 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             //TODO block person from starting game?
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
     }
 }

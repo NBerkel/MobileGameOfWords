@@ -68,13 +68,14 @@ public class gameplay extends Fragment {
     ImageView leftCircleImageView;
     ImageView rightCircleImageView;
     List<String> words;
+    List<String> wordsUserRating;
     Animations anim = new Animations();
+    boolean answerProvided = false;
     int currentWord = 0;
     Animation fromAtoB;
     Animation.AnimationListener animationListener = new Animation.AnimationListener() {
         @Override
-        public void onAnimationStart(Animation animation) {
-        }
+        public void onAnimationStart(Animation animation) { }
 
         @Override
         public void onAnimationRepeat(Animation animation) {
@@ -82,8 +83,12 @@ public class gameplay extends Fragment {
 
         @Override
         public void onAnimationEnd(Animation animation) {
-            //currentGameWord.setVisibility(View.INVISIBLE);
+            if(answerProvided == false) {
+                //add "none" to wordlist (instead of the usual relevant/irrelevant vote)
+                wordsUserRating.add("none");
+            }
             currentWord++;
+            Log.d("Niels", "animation end");
             nextWord();
         }
     };
@@ -153,10 +158,9 @@ public class gameplay extends Fragment {
             }
         });
 
-        //TODO randomly determine position of irrelevant / relevant button.
+        //TODO randomly determine position of irrelevant / relevant button?
 
         getGameWords();
-
 
         return view;
     }
@@ -184,6 +188,7 @@ public class gameplay extends Fragment {
 
     private void setGameWords(String response) {
         words = new ArrayList<>();
+        wordsUserRating = new ArrayList<>();
 
         try {
             JSONArray strJson = new JSONArray(response);
@@ -204,12 +209,14 @@ public class gameplay extends Fragment {
     }
 
     private void irrelevantBtnPressed() {
-        Log.d("Niels", "Irrelevant Button Pressed");
+        answerProvided = true;
+        wordsUserRating.add("irrelevant");
         anim.scaleView(leftCircleImageView, 1f, 1.2f, 400);
     }
 
     private void relevantBtnPressed() {
-        Log.d("Niels", "Relevant Button Pressed");
+        answerProvided = true;
+        wordsUserRating.add("relevant");
         anim.scaleView(rightCircleImageView, 1f, 1.2f, 400);
     }
 
@@ -219,6 +226,7 @@ public class gameplay extends Fragment {
 
     private void nextWord() {
         if (currentWord < words.size()) {
+            answerProvided = false;
             Log.d("Niels", "nextWord called");
             Log.d("Niels", String.valueOf(words.size()));
             Log.d("Niels", String.valueOf(currentWord));
@@ -247,27 +255,33 @@ public class gameplay extends Fragment {
         fragmentTransaction.commit();
     }
 
-    JSONArray wordRatings= new JSONArray();
+    JSONArray wordJsonRatings= new JSONArray();
 
     private void transferWordRatings() throws JSONException {
-        //JSONArray sliderWords = MainActivity.sliderWords;
-        for (int i = 0; i < 10; i++) {
-            //TODO
+
+        Log.d("Nielsss", String.valueOf(wordsUserRating.size()));
+        Log.d("Nielsss", String.valueOf(words.size()));
+
+        for (int i = 0; i < words.size(); i++) {
             JSONObject wordAnswer = new JSONObject();
 
-            wordAnswer.put("word","eveilgenius");
-            wordAnswer.put("rating","relevant");
+            wordAnswer.put("word",words.get(i));
+            wordAnswer.put("rating",wordsUserRating.get(i));
 
-            wordRatings.put(wordAnswer);
+            wordJsonRatings.put(wordAnswer);
         }
-        String wordRatingsString = wordRatings.toString();
+        String wordRatingsString = wordJsonRatings.toString();
+
+        CalculateScore calculateScore = new CalculateScore(getContext());
+        calculateScore.CalculateScore(wordRatingsString);
+
         sendVolley(wordRatingsString);
     }
 
     private void sendVolley(final String wordRatingsString) {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url = "http://gow.ddns.net/updatewordlist.php";
+        String url = MainActivity.getIP() + "updatewordlist.php";
 
         StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -306,13 +320,8 @@ public class gameplay extends Fragment {
         float to_x = currentGameWord.getX();
         float to_y = currentGameWord.getY() - 900;
 
-        Log.d("Niels", String.valueOf(currentGameWord.getY()));
-        Log.d("Niels", String.valueOf(view.getHeight()));
-
         float x_from = currentGameWord.getX();
         float y_from = currentGameWord.getY();
-        //txtTwo.getLocationInWindow(fromLoc);
-        //currentGameWord.getLocationOnScreen(toLoc);
 
         Animation moveText = anim.fromAtoB(0, 0, to_x - x_from, to_y - y_from, animationListener, 5000);
 
