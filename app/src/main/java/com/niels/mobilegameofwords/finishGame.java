@@ -1,15 +1,16 @@
 package com.niels.mobilegameofwords;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import org.json.JSONException;
 
 
 /**
@@ -26,9 +27,9 @@ public class finishGame extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    View view;
+    TextView pointsTextView;
+    CalculateScore scorer;
 
     private OnFragmentInteractionListener mListener;
 
@@ -57,17 +58,33 @@ public class finishGame extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        scorer = new CalculateScore(getContext());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_finish_game, container, false);
+
+        int score = scorer.getAchievedScore();
+
+        Log.d("Niels", "hoi?" + score);
+
+        pointsTextView = (TextView) view.findViewById(R.id.pointsTextView);
+
+        pointsTextView.setText(scorer.getAchievedScore() + " points!");
+
+
+        // Submit GameplayStats
+        SendGameplayStats sendGameplayStats = new SendGameplayStats(getContext());
+        try {
+            sendGameplayStats.UpdateStatsDB();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_finish_game, container, false);
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -86,6 +103,14 @@ public class finishGame extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
+    public void updateScore(int response) {
+        Log.d("Niels", "Score updated; " + response);
+        TextView textView = (TextView) view.findViewById(R.id.pointsTextView);
+        textView.setText("TEST");
+        //pointsTextView.setText(response + " points!");
+    }
+
 
     /**
      * This interface must be implemented by activities that contain this

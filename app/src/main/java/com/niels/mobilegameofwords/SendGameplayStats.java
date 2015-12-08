@@ -1,10 +1,7 @@
 package com.niels.mobilegameofwords;
 
-
 import android.content.Context;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.location.Location;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -17,61 +14,53 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
- * Created by niels on 01/12/15.
+ * Created by niels on 08/12/15.
  */
-public class CalculateScore {
+public class SendGameplayStats {
 
-    private int achievedScore;
     private Context mContext;
 
-    public CalculateScore(Context context) {
-            mContext = context;
+    public SendGameplayStats(Context context) {
+        mContext = context;
     }
 
-    public int getAchievedScore() {
-        return this.achievedScore;
-    }
+    public void UpdateStatsDB() throws JSONException {
+        // We can stop updating GameplayStats
+        GameplayStats.stopGPS();
 
-    public void setAchievedScore(int achievedScore) {
-        this.achievedScore = achievedScore;
-    }
-
-    public void CalculateScore(String userAnswers) {
-        sendVolley(userAnswers);
-    }
-
-    private void sendVolley(final String userAnswers) {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(mContext);
-        String url = MainActivity.getIP() + "calculatescore.php";
+
+        Location gps_location = GameplayStats.getGPSLocation();
+        float gps_accuracy = GameplayStats.getGPSAccuracy();
+
+        if(gps_location == null) {
+            gps_location = new Location("");
+            gps_location.setLatitude(0);
+            gps_location.setLongitude(0);
+        }
+
+        String nickname = MainActivity.getNickname();
+
+        String url = MainActivity.getIP() + "updategameplaystats.php";
+
+        final JSONObject userScore = new JSONObject();
+        userScore.put("nickname",nickname);
+        userScore.put("score", "10");
+        String gps_location_string = gps_location.getLatitude() + "," + gps_location.getLongitude();
+        userScore.put("gps_location", gps_location_string);
+        userScore.put("gps_accuracy", gps_accuracy);
 
         StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d("GameOfWords", response);
-                setAchievedScore(Integer.parseInt(response));
-
-//                finishGame myFragment = new finishGame();
-//                myFragment.updateScore(Integer.parseInt(response));
-//                FragmentManager fragmentManager = getFragmentManager();
-//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                fragmentTransaction.add(R.id.container_body, myFragment);
-//                fragmentTransaction.commit();
-
-                //finishGame.updateScore(Integer.parseInt(response));
-
-                UpdateScore updateScore = new UpdateScore(mContext);
-                try {
-                    updateScore.UpdateScoreDB(achievedScore);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                Log.d("GameOfWords", response.toString());
             }
         }, new Response.ErrorListener() {
             @Override
@@ -83,7 +72,7 @@ public class CalculateScore {
             @Override
             protected Map<String, String> getParams() {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("json_words", userAnswers);
+                params.put("gameplayStats", String.valueOf(userScore));
                 return params;
             }
 

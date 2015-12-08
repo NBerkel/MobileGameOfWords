@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
     Boolean userAlreadyExists = false;
     String fileName = "nicknamem";
 
+    GameplayStats gameplayStats;
+    GeoFences geofences;
+
     DBGetLeaderboard dbGetLeaderboard = new DBGetLeaderboard(this);
 
     public static String getIP() { return ip; }
@@ -70,6 +72,11 @@ public class MainActivity extends AppCompatActivity {
         playGameBtn = (Button) findViewById(R.id.playGameBtn);
 
         dbGetLeaderboard.getLeaderboard(getApplicationContext());
+
+        gameplayStats = new GameplayStats(this);
+        gameplayStats.startGPSSensor();
+        geofences = new GeoFences();
+        geofences.addGeofenceList(getApplicationContext());
 
         checkUsername();
         getCriteria();
@@ -235,4 +242,6 @@ public class MainActivity extends AppCompatActivity {
             //TODO block person from starting game?
         }
     }
+
+
 }

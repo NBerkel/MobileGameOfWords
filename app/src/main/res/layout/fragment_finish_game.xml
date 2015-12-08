@@ -2,9 +2,36 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" tools:context="com.niels.mobilegameofwords.finishGame">
 
-    <TextView android:layout_width="match_parent"
-        android:gravity="center"
-        android:layout_height="match_parent"
-        android:text="Game finished!" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Game finished!" />
+
+        <TextView
+            android:id="@+id/pointsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="20 points!"
+            android:capitalize="characters"
+            android:textSize="@dimen/abc_text_size_headline_material" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Play again!"
+            android:id="@+id/playAgainButton" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Take me home"
+            android:id="@+id/backMainScreenButton" />
+
+    </LinearLayout>
 
 </FrameLayout>

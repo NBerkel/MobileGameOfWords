@@ -62,8 +62,6 @@ public class gameplay extends Fragment {
     View view;
     TextView currentGameWord;
     TextView wordProgress;
-    Button irrelevantBtn;
-    Button relevantBtn;
     Button finishBtn;
     ImageView leftCircleImageView;
     ImageView rightCircleImageView;
@@ -248,6 +246,10 @@ public class gameplay extends Fragment {
             e.printStackTrace();
         }
 
+        CalculateScore scorer = new CalculateScore(this.getContext());
+        int score = scorer.getAchievedScore();
+        Log.d("NIELS", String.valueOf(score));
+
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.container_body, fragment);
@@ -258,10 +260,6 @@ public class gameplay extends Fragment {
     JSONArray wordJsonRatings= new JSONArray();
 
     private void transferWordRatings() throws JSONException {
-
-        Log.d("Nielsss", String.valueOf(wordsUserRating.size()));
-        Log.d("Nielsss", String.valueOf(words.size()));
-
         for (int i = 0; i < words.size(); i++) {
             JSONObject wordAnswer = new JSONObject();
 
