@@ -39,6 +39,7 @@ public class SendGameplayStats {
 
         Location gps_location = GameplayStats.getGPSLocation();
         float gps_accuracy = GameplayStats.getGPSAccuracy();
+        String gps_zone = GameplayStats.getGPSZone();
 
         if(gps_location == null) {
             gps_location = new Location("");
@@ -50,12 +51,13 @@ public class SendGameplayStats {
 
         String url = MainActivity.getIP() + "updategameplaystats.php";
 
-        final JSONObject userScore = new JSONObject();
-        userScore.put("nickname",nickname);
-        userScore.put("score", "10");
+        final JSONObject gamePlayStats = new JSONObject();
+        gamePlayStats.put("nickname", nickname);
+        gamePlayStats.put("score", "10");
         String gps_location_string = gps_location.getLatitude() + "," + gps_location.getLongitude();
-        userScore.put("gps_location", gps_location_string);
-        userScore.put("gps_accuracy", gps_accuracy);
+        gamePlayStats.put("gps_location", gps_location_string);
+        gamePlayStats.put("gps_zone", gps_zone);
+        gamePlayStats.put("gps_accuracy", gps_accuracy);
 
         StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -72,7 +74,7 @@ public class SendGameplayStats {
             @Override
             protected Map<String, String> getParams() {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("gameplayStats", String.valueOf(userScore));
+                params.put("gameplayStats", String.valueOf(gamePlayStats));
                 return params;
             }
 

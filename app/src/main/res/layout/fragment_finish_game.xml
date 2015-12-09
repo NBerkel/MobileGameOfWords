@@ -5,8 +5,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical">
 
         <TextView android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -16,21 +16,21 @@
             android:id="@+id/pointsTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="20 points!"
             android:capitalize="characters"
+            android:text="Calculating points ..."
             android:textSize="@dimen/abc_text_size_headline_material" />
 
         <Button
+            android:id="@+id/playAgainButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Play again!"
-            android:id="@+id/playAgainButton" />
+            android:text="Play again!" />
 
         <Button
+            android:id="@+id/backMainScreenButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Take me home"
-            android:id="@+id/backMainScreenButton" />
+            android:text="Take me home" />
 
     </LinearLayout>
 

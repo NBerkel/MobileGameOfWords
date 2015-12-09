@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
@@ -24,6 +25,7 @@ import java.util.List;
 public class GeoFenceTransitionIntentService extends IntentService {
 
     protected static final String TAG = "GeofenceTransitionsIS";
+    int previousTransition;
 
     /**
      * This constructor is required, and calls the super IntentService(String)
@@ -54,13 +56,15 @@ public class GeoFenceTransitionIntentService extends IntentService {
             return;
         }
         Log.d("Niels", "intent detected");
+        GameplayStats gameplayStats = new GameplayStats(this);
 
         // Get the transition type.
         int geofenceTransition = geofencingEvent.getGeofenceTransition();
 
-        // Only get an alert if person has been in the place > 30 sec.
-        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_DWELL) {
-            Log.d("Niels", "DWELL ACTIVATED");
+        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER && geofenceTransition != previousTransition) {
+            previousTransition = geofenceTransition;
+
+            Log.d("Niels", "Entered location");
 
             // Get the geofences that were triggered. A single event can trigger multiple geofences.
             List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
@@ -73,12 +77,30 @@ public class GeoFenceTransitionIntentService extends IntentService {
             );
 
             // Send notification and log the transition details.
-            sendNotification(geofenceTransitionDetails);
+            sendNotification("Entered " + geofencingEvent.getTriggeringGeofences().get(0).getRequestId());
             Log.d("Niels", geofenceTransitionDetails);
+            // Set zone
+            gameplayStats.setGPSZone(geofencingEvent.getTriggeringGeofences().get(0).getRequestId());
+        } else if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
+            // User has left the geofence
+            // dismiss notification
+            dismissNotification();
+            // remove set zone
+            gameplayStats.setGPSZone("Other");
         } else {
             // Log the error.
             Log.e(TAG, getString(R.string.geofence_transition_invalid_type, geofenceTransition));
+            gameplayStats.setGPSZone("Other");
         }
+    }
+
+    private void dismissNotification() {
+        // Get an instance of the Notification manager
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // Issue the notification
+        mNotificationManager.cancel(0);
     }
 
     /**
@@ -101,7 +123,7 @@ public class GeoFenceTransitionIntentService extends IntentService {
         for (Geofence geofence : triggeringGeofences) {
             triggeringGeofencesIdsList.add(geofence.getRequestId());
 
-            Log.d("Niels", "geofence question transition details");
+            Log.d("Niels", "...");
         }
         String triggeringGeofencesIdsString = TextUtils.join(", ", triggeringGeofencesIdsList);
 
@@ -112,7 +134,7 @@ public class GeoFenceTransitionIntentService extends IntentService {
      * Posts a notification in the notification bar when a transition is detected.
      * If the user clicks the notification, control goes to the MainActivity.
      */
-    private void sendNotification(String notificationDetails) {
+    public void sendNotification(String notificationDetails) {
         // Create an explicit content Intent that starts the main Activity.
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
 
@@ -139,6 +161,7 @@ public class GeoFenceTransitionIntentService extends IntentService {
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(),
                         R.mipmap.ic_launcher))
                 .setColor(Color.RED)
+                .setVibrate(new long[]{0, 1000, 1000, 1000, 1000})
                 .setContentTitle(notificationDetails)
                 .setContentText(getString(R.string.geofence_transition_notification_text))
                 .setContentIntent(notificationPendingIntent);
@@ -146,12 +169,23 @@ public class GeoFenceTransitionIntentService extends IntentService {
         // Dismiss notification once the user touches it.
         builder.setAutoCancel(true);
 
-        // Get an instance of the Notification manager
-        NotificationManager mNotificationManager =
+
+        // Get an instance of the Notification manager.
+        final NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         // Issue the notification
         mNotificationManager.notify(0, builder.build());
+
+        // Dismiss notification after a set amount of time.
+        Handler h = new Handler();
+        long delayInMilliseconds = 5000;
+        h.postDelayed(new Runnable() {
+            public void run() {
+                mNotificationManager.cancel(0);
+                Log.d("Niels", "Notification cancelled");
+            }
+        }, delayInMilliseconds);
     }
 
     /**

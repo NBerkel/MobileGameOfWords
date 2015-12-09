@@ -15,15 +15,16 @@ import android.util.Log;
  */
 public class GameplayStats {
 
+    private static final int TWO_MINUTES = 1000 * 60 * 2;
+    static Location gps_location;
+    static float gps_accuracy;
+    static String gps_zone;
+    static LocationListener locationListener;
     private static Context context;
 
     public GameplayStats(Context _context) {
         context = _context;
     }
-
-    static Location gps_location;
-    static float gps_accuracy;
-    static int gps_zone;
 
     public static Location getGPSLocation() {
         return gps_location;
@@ -33,16 +34,34 @@ public class GameplayStats {
         return gps_accuracy;
     }
 
-    public static float getGPSZone() {
+    public static String getGPSZone() {
         return gps_zone;
+    }
+
+    public void setGPSZone(String gpsZone) {
+        Log.d("Niels", "GPS zone set to " + gpsZone);
+        gps_zone = gpsZone;
+    }
+
+    public static void stopGPS() {
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationManager.removeUpdates(locationListener);
     }
 
     public void setGPSLocation() {
         startGPSSensor();
         //gps_location = String.valueOf(10);
     }
-
-    static LocationListener locationListener;
 
     // http://developer.android.com/guide/topics/location/strategies.html
     public void startGPSSensor() {
@@ -87,11 +106,8 @@ public class GameplayStats {
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+        //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
     }
-
-
-    private static final int TWO_MINUTES = 1000 * 60 * 2;
 
     /** Determines whether one Location reading is better than the current Location fix
      * @param location  The new Location that you want to evaluate
@@ -133,21 +149,5 @@ public class GameplayStats {
             return true;
         }
         return false;
-    }
-
-
-    public static void stopGPS() {
-        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        locationManager.removeUpdates(locationListener);
     }
 }

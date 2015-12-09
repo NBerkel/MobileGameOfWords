@@ -95,6 +95,7 @@ public class GeoFences extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
+        Log.d("Niels", "onStart called");
         mGoogleApiClient.connect();
     }
 

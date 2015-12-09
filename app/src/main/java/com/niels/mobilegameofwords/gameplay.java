@@ -1,10 +1,8 @@
 package com.niels.mobilegameofwords;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -12,16 +10,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -38,11 +32,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 
@@ -71,6 +62,7 @@ public class gameplay extends Fragment {
     boolean answerProvided = false;
     int currentWord = 0;
     Animation fromAtoB;
+    JSONArray wordJsonRatings = new JSONArray();
     Animation.AnimationListener animationListener = new Animation.AnimationListener() {
         @Override
         public void onAnimationStart(Animation animation) { }
@@ -94,6 +86,7 @@ public class gameplay extends Fragment {
     private String mParam1;
     private String mParam2;
     private OnFragmentInteractionListener mListener;
+
     public gameplay() {
         // Required empty public constructor
     }
@@ -246,18 +239,12 @@ public class gameplay extends Fragment {
             e.printStackTrace();
         }
 
-        CalculateScore scorer = new CalculateScore(this.getContext());
-        int score = scorer.getAchievedScore();
-        Log.d("NIELS", String.valueOf(score));
-
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.container_body, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
-
-    JSONArray wordJsonRatings= new JSONArray();
 
     private void transferWordRatings() throws JSONException {
         for (int i = 0; i < words.size(); i++) {
@@ -355,7 +342,7 @@ public class gameplay extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(Uri uri);
     }
 
     public class Animations {

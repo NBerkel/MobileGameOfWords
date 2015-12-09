@@ -2,9 +2,7 @@ package com.niels.mobilegameofwords;
 
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.content.Intent;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -34,14 +32,6 @@ public class CalculateScore {
             mContext = context;
     }
 
-    public int getAchievedScore() {
-        return this.achievedScore;
-    }
-
-    public void setAchievedScore(int achievedScore) {
-        this.achievedScore = achievedScore;
-    }
-
     public void CalculateScore(String userAnswers) {
         sendVolley(userAnswers);
     }
@@ -55,16 +45,10 @@ public class CalculateScore {
             @Override
             public void onResponse(String response) {
                 Log.d("GameOfWords", response);
-                setAchievedScore(Integer.parseInt(response));
 
-//                finishGame myFragment = new finishGame();
-//                myFragment.updateScore(Integer.parseInt(response));
-//                FragmentManager fragmentManager = getFragmentManager();
-//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                fragmentTransaction.add(R.id.container_body, myFragment);
-//                fragmentTransaction.commit();
-
-                //finishGame.updateScore(Integer.parseInt(response));
+                Intent setPoints = new Intent("ACTION_GAME_POINTS");
+                setPoints.putExtra("score", Integer.parseInt(response));
+                mContext.sendBroadcast(setPoints);
 
                 UpdateScore updateScore = new UpdateScore(mContext);
                 try {

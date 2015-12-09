@@ -1,10 +1,11 @@
 package com.niels.mobilegameofwords;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,12 +27,14 @@ public class finishGame extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    static TextView pointsTextView;
+    static CalculateScore scorer;
     View view;
-    TextView pointsTextView;
-    CalculateScore scorer;
-
     private OnFragmentInteractionListener mListener;
+
+    public finishGame() {
+        // Required empty public constructor
+    }
 
     /**
      * Use this factory method to create a new instance of
@@ -51,10 +54,6 @@ public class finishGame extends Fragment {
         return fragment;
     }
 
-    public finishGame() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,14 +65,7 @@ public class finishGame extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_finish_game, container, false);
 
-        int score = scorer.getAchievedScore();
-
-        Log.d("Niels", "hoi?" + score);
-
         pointsTextView = (TextView) view.findViewById(R.id.pointsTextView);
-
-        pointsTextView.setText(scorer.getAchievedScore() + " points!");
-
 
         // Submit GameplayStats
         SendGameplayStats sendGameplayStats = new SendGameplayStats(getContext());
@@ -104,14 +96,6 @@ public class finishGame extends Fragment {
         mListener = null;
     }
 
-    public void updateScore(int response) {
-        Log.d("Niels", "Score updated; " + response);
-        TextView textView = (TextView) view.findViewById(R.id.pointsTextView);
-        textView.setText("TEST");
-        //pointsTextView.setText(response + " points!");
-    }
-
-
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -124,7 +108,14 @@ public class finishGame extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(Uri uri);
     }
 
+    public static class PointsListener extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int score = intent.getIntExtra("score", 0);
+            if (pointsTextView != null) pointsTextView.setText(score + " points!");
+        }
+    }
 }
