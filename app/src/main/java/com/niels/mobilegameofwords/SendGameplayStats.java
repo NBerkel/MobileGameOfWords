@@ -37,6 +37,9 @@ public class SendGameplayStats {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(mContext);
 
+        String word = GameplayStats.getWord();
+        int score = GameplayStats.getScore();
+        
         Location gps_location = GameplayStats.getGPSLocation();
         float gps_accuracy = GameplayStats.getGPSAccuracy();
         String gps_zone = GameplayStats.getGPSZone();
@@ -53,7 +56,8 @@ public class SendGameplayStats {
 
         final JSONObject gamePlayStats = new JSONObject();
         gamePlayStats.put("nickname", nickname);
-        gamePlayStats.put("score", "10");
+        gamePlayStats.put("word", word);
+        gamePlayStats.put("score", score);
         String gps_location_string = gps_location.getLatitude() + "," + gps_location.getLongitude();
         gamePlayStats.put("gps_location", gps_location_string);
         gamePlayStats.put("gps_zone", gps_zone);

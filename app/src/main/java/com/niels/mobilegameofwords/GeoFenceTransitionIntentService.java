@@ -76,9 +76,11 @@ public class GeoFenceTransitionIntentService extends IntentService {
                     triggeringGeofences
             );
 
-            // Send notification and log the transition details.
-            sendNotification("Entered " + geofencingEvent.getTriggeringGeofences().get(0).getRequestId());
-            Log.d("Niels", geofenceTransitionDetails);
+            // Send notification and log the transition details (only if application is not in foreground)
+            if (MainActivity.isActivityRunning != true) {
+                sendNotification("Entered " + geofencingEvent.getTriggeringGeofences().get(0).getRequestId());
+                Log.d("Niels", geofenceTransitionDetails);
+            }
             // Set zone
             gameplayStats.setGPSZone(geofencingEvent.getTriggeringGeofences().get(0).getRequestId());
         } else if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
@@ -169,10 +171,8 @@ public class GeoFenceTransitionIntentService extends IntentService {
         // Dismiss notification once the user touches it.
         builder.setAutoCancel(true);
 
-
         // Get an instance of the Notification manager.
-        final NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        final NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         // Issue the notification
         mNotificationManager.notify(0, builder.build());

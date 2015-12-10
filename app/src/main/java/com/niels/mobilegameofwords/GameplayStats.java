@@ -20,10 +20,20 @@ public class GameplayStats {
     static float gps_accuracy;
     static String gps_zone;
     static LocationListener locationListener;
+    static String word;
     private static Context context;
+    private static int score;
 
     public GameplayStats(Context _context) {
         context = _context;
+    }
+
+    public static String getWord() {
+        return word;
+    }
+
+    public void setWord(String locRelevantWord) {
+        word = locRelevantWord;
     }
 
     public static Location getGPSLocation() {
@@ -41,6 +51,14 @@ public class GameplayStats {
     public void setGPSZone(String gpsZone) {
         Log.d("Niels", "GPS zone set to " + gpsZone);
         gps_zone = gpsZone;
+    }
+
+    public static int getScore() {
+        return score;
+    }
+
+    public void setScore(int achievedScore) {
+        score = achievedScore;
     }
 
     public static void stopGPS() {
@@ -150,4 +168,6 @@ public class GameplayStats {
         }
         return false;
     }
+
+
 }

@@ -50,6 +50,8 @@ public class CalculateScore {
                 setPoints.putExtra("score", Integer.parseInt(response));
                 mContext.sendBroadcast(setPoints);
 
+                achievedScore = Integer.parseInt(response);
+
                 UpdateScore updateScore = new UpdateScore(mContext);
                 try {
                     updateScore.UpdateScoreDB(achievedScore);

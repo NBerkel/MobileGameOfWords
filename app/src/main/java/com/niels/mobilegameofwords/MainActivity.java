@@ -57,24 +57,18 @@ public class MainActivity extends AppCompatActivity
     protected static final String TAG = "MainActivity";
     public static JSONArray sliderWords = new JSONArray();
     public static String nickname;
+    public static boolean isActivityRunning;
     static String ip = "http://gow.ddns.net/";
     public GameplayStats gameplayStats;
-    /**
-     * Provides the entry point to Google Play services.
-     */
     protected GoogleApiClient mGoogleApiClient;
-    /**
-     * The list of geofences used in this sample.
-     */
     protected ArrayList<Geofence> mGeofenceList;
-    String currentLocation;
-    TextView currentLocationTextView;
     TextView welcomeTextView;
     Button playGameBtn;
     EditText usernameEditText;
     Boolean userAlreadyExists = false;
     String fileName = "nicknamem";
     DBGetLeaderBoard dbGetLeaderboard = new DBGetLeaderBoard(this);
+
     /**
      * Used to keep track of whether geofences were added.
      */
@@ -170,7 +164,7 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.container_body, fragment);
-        fragmentTransaction.addToBackStack(null);
+        //fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
@@ -341,12 +335,15 @@ public class MainActivity extends AppCompatActivity
             return;
         }
         locationManager.removeUpdates(GameplayStats.locationListener);
+        isActivityRunning = false;
+        Log.d("Niels", "isActivityRunning " + isActivityRunning);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
+        isActivityRunning = true;
+        Log.d("Niels", "isActivityRunning " + isActivityRunning);
         //TODO Restart GPS sensor
     }
 

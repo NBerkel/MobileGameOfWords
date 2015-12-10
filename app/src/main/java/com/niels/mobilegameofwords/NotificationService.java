@@ -72,18 +72,20 @@ public class NotificationService extends Service {
         final NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // Issue the notification
-        mNotificationManager.notify(0, builder.build());
+        // Issue the notification - only if application is not open.
+        if (MainActivity.isActivityRunning != true) {
+            mNotificationManager.notify(0, builder.build());
 
-        // Dismiss notification after a set amount of time.
-        Handler h = new Handler();
-        long delayInMilliseconds = Constants.NOTIFICATION_DISMISS_TIME;
-        h.postDelayed(new Runnable() {
-            public void run() {
-                mNotificationManager.cancel(0);
-                Log.d("Niels", "Notification cancelled");
-            }
-        }, delayInMilliseconds);
+            // Dismiss notification after a set amount of time.
+            Handler h = new Handler();
+            long delayInMilliseconds = Constants.NOTIFICATION_DISMISS_TIME;
+            h.postDelayed(new Runnable() {
+                public void run() {
+                    mNotificationManager.cancel(0);
+                    Log.d("Niels", "Notification cancelled");
+                }
+            }, delayInMilliseconds);
+        }
     }
 
     @Nullable

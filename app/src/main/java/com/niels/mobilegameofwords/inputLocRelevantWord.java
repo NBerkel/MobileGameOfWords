@@ -1,18 +1,16 @@
 package com.niels.mobilegameofwords;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.app.Fragment;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -70,6 +68,8 @@ public class inputLocRelevantWord extends Fragment {
 
                 if (locRelevantEditText.length() != 0) {
                     try {
+                        GameplayStats gameplayStats = new GameplayStats(getContext());
+                        gameplayStats.setWord(locRelevantWord);
                         sendNewWord(locRelevantWord);
                     } catch (Exception e) {}
 
@@ -159,7 +159,7 @@ public class inputLocRelevantWord extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(Uri uri);
     }
 
 }

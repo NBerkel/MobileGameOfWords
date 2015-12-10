@@ -30,7 +30,11 @@ public class UpdateScore {
         mContext = context;
     }
 
-    public void UpdateScoreDB(final int achievedScore) throws JSONException {
+    public void UpdateScoreDB(int achievedScore) throws JSONException {
+        // Send to GameplayStats
+        GameplayStats gameplayStats = new GameplayStats(mContext);
+        gameplayStats.setScore(achievedScore);
+
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(mContext);
         String url = MainActivity.getIP() + "updatescore.php";
@@ -38,8 +42,8 @@ public class UpdateScore {
         String nickname = MainActivity.getNickname();
 
         final JSONObject userScore = new JSONObject();
-        userScore.put("nickname",nickname);
-        userScore.put("score",achievedScore);
+        userScore.put("nickname", nickname);
+        userScore.put("score", achievedScore);
 
         StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
