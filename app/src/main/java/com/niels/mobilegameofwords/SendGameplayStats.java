@@ -50,7 +50,7 @@ public class SendGameplayStats {
             gps_location.setLongitude(0);
         }
 
-        String nickname = MainActivity.getNickname();
+        String nickname = HomeScreen.getNickname();
 
         String url = MainActivity.getIP() + "updategameplaystats.php";
 

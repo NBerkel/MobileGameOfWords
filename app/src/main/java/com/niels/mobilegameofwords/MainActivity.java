@@ -16,11 +16,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -45,7 +40,6 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -56,18 +50,13 @@ public class MainActivity extends AppCompatActivity
 
     protected static final String TAG = "MainActivity";
     public static JSONArray sliderWords = new JSONArray();
-    public static String nickname;
     public static boolean isActivityRunning;
     static String ip = "http://gow.ddns.net/";
     public GameplayStats gameplayStats;
     protected GoogleApiClient mGoogleApiClient;
     protected ArrayList<Geofence> mGeofenceList;
-    TextView welcomeTextView;
-    Button playGameBtn;
-    EditText usernameEditText;
-    Boolean userAlreadyExists = false;
+
     String fileName = "nicknamem";
-    DBGetLeaderBoard dbGetLeaderboard = new DBGetLeaderBoard(this);
 
     /**
      * Used to keep track of whether geofences were added.
@@ -86,10 +75,6 @@ public class MainActivity extends AppCompatActivity
         return ip;
     }
 
-    public static String getNickname() {
-        return nickname;
-    }
-
     public static JSONArray getsliderWords() {
         return sliderWords;
     }
@@ -97,13 +82,16 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
-        welcomeTextView = (TextView) findViewById(R.id.welcomeTextView);
-        usernameEditText = (EditText) findViewById(R.id.usernameEditText);
-        playGameBtn = (Button) findViewById(R.id.playGameBtn);
+        Fragment fragment = new HomeScreen();
 
-        dbGetLeaderboard.getLeaderboard(getApplicationContext());
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.container_body, fragment);
+        //fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
 
         gameplayStats = new GameplayStats(this);
         // Initialise with "other" zone
@@ -114,34 +102,8 @@ public class MainActivity extends AppCompatActivity
 
         checkUsername();
         getCriteria();
-
         // Start ESM notification counter
         startAlarm();
-
-        playGameBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (userAlreadyExists == false) {
-                    if (checkUsernameInput() == true) {
-                        // Write text file with username
-                        String content = String.valueOf(usernameEditText.getText());
-
-                        Log.d("Niels", "Create file");
-                        FileOutputStream outputStream;
-                        try {
-                            outputStream = openFileOutput(fileName, Context.MODE_PRIVATE);
-                            outputStream.write(content.getBytes());
-                            outputStream.close();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        startGame();
-                    }
-                } else {
-                    startGame();
-                }
-            }
-        });
     }
 
     private void startAlarm() {
@@ -154,29 +116,13 @@ public class MainActivity extends AppCompatActivity
         am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, Constants.NOTIFICATION_TIMEOUT, Constants.NOTIFICATION_TIMEOUT, sender);
     }
 
-    private void startGame() {
-        LinearLayout intro_text = (LinearLayout) findViewById(R.id.intro_text);
-        intro_text.setVisibility(View.GONE);
 
-        //TODO: replace with inputLocRelevantWord()
-        Fragment fragment = new inputLocRelevantWord();
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.container_body, fragment);
-        //fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
 
     private void checkUsername() {
         //check if username already exist, else offer possibility to enter new username
         if (fileExistance(fileName) == true) {
-            // remove username input
-            LinearLayout linearLayoutUsernameInput = (LinearLayout) findViewById(R.id.linearLayoutUsernameInput);
-            linearLayoutUsernameInput.setVisibility(View.GONE);
-
             Log.d("Niels", "File exist, lets read it!");
-            userAlreadyExists = true;
+            HomeScreen.userAlreadyExists = true;
             BufferedReader input;
             File file;
             try {
@@ -190,44 +136,13 @@ public class MainActivity extends AppCompatActivity
                 }
                 Log.d("Niels", "File content " + buffer.toString());
 
-                nickname = buffer.toString();
-                welcomeTextView.setText("Welcome back " + nickname + "!");
+                HomeScreen.nickname = buffer.toString();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            userAlreadyExists = false;
+            HomeScreen.userAlreadyExists = false;
         }
-    }
-
-    private boolean checkUsernameInput() {
-        String userNameText = usernameEditText.getText().toString();
-        if (userNameText.matches("")) {
-            //Empty, no username provided.
-            Toast.makeText(this, "You did not enter a username", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        ArrayList nicknames = dbGetLeaderboard.nicknames;
-        for (int i = 0; i < nicknames.size(); i++) {
-            System.out.println(nicknames.get(i));
-
-
-            String nickname = "";
-            JSONObject jObj = (JSONObject) nicknames.get(i);
-            try {
-                nickname = jObj.getString("nicknames");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            if (userNameText.equals(nickname)) {
-                Toast.makeText(this, "Username already in use", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-
-        }
-        return true;
     }
 
     public boolean fileExistance(String fname) {
@@ -246,12 +161,12 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onResponse(String response) {
                         getJSONInfo(response);
-                        playGameBtn.setEnabled(true);
+                        HomeScreen.enablePlayBtn = true;
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                playGameBtn.setEnabled(false);
+                HomeScreen.enablePlayBtn = false;
                 Log.d("GameOfWords", String.valueOf(error));
             }
         });

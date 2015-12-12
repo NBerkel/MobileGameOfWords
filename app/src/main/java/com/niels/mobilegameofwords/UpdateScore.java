@@ -39,7 +39,7 @@ public class UpdateScore {
         RequestQueue queue = Volley.newRequestQueue(mContext);
         String url = MainActivity.getIP() + "updatescore.php";
 
-        String nickname = MainActivity.getNickname();
+        String nickname = HomeScreen.getNickname();
 
         final JSONObject userScore = new JSONObject();
         userScore.put("nickname", nickname);
