@@ -1,7 +1,6 @@
 package com.niels.mobilegameofwords;
 
 import android.Manifest;
-import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -85,6 +84,8 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main);
 
+        checkUsername();
+
         Fragment fragment = new HomeScreen();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity
 
         addGeofenceList(this);
 
-        checkUsername();
+
         getCriteria();
         // Start ESM notification counter
         startAlarm();
@@ -109,13 +110,17 @@ public class MainActivity extends AppCompatActivity
     private void startAlarm() {
         Log.d("Alarm scheduler", "Alarm is being scheduled");
 
-        Intent intent = new Intent(MainActivity.this, NotificationService.class);
-        PendingIntent sender = PendingIntent.getService(MainActivity.this, 0, intent, 0);
+        Intent notificationIntent = new Intent(this, NotificationService.class);
+        startService(notificationIntent);
 
-        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, Constants.NOTIFICATION_TIMEOUT, Constants.NOTIFICATION_TIMEOUT, sender);
+        /*Intent intent = new Intent(this, MainActivity.class);
+        String id = "AlarmNotification";
+        intent.putExtra("ID_KEY", id);
+        PendingIntent sender = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);*/
+
+        //AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        //am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, Constants.NOTIFICATION_TIMEOUT, Constants.NOTIFICATION_TIMEOUT, sender);
     }
-
 
 
     private void checkUsername() {
@@ -243,7 +248,7 @@ public class MainActivity extends AppCompatActivity
     protected void onPause() {
         super.onPause();
 
-        // Stop collecting GPS
+        // Stop collecting GPS TODO, does not work
         LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling ActivityCompat#requestPermissions here to request the missing permissions
@@ -257,6 +262,19 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (getIntent() != null && getIntent().getExtras() != null) { //Launched from Notification
+            if (getIntent().getExtras().containsKey("ID_KEY")) {
+                String intent = getIntent().getExtras().getString("ID_KEY");
+                //launched from notification
+                Log.d("Niels", "notification launch" + intent);
+                getIntent().removeExtra("ID_KEY");
+            }
+        } else {
+            //launched from launcher
+            Log.d("Niels", "application launch");
+        }
+
         isActivityRunning = true;
         Log.d("Niels", "isActivityRunning " + isActivityRunning);
         //TODO Restart GPS sensor

@@ -1,38 +1,74 @@
 package com.niels.mobilegameofwords;
 
+import android.app.AlarmManager;
+import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Handler;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
+import java.util.Calendar;
+
 /**
  * Created by niels on 09/12/15.
  */
-public class NotificationService extends Service {
+public class NotificationService extends IntentService {
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+    public NotificationService() {
+        super("NotificationService");
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("Service", "Service has been called.");
+    protected void onHandleIntent(Intent intent) {
+        Log.d("Niels", "onHandleIntent.");
 
-        sendAlert();
-        return START_NOT_STICKY;
+        /*Intent intent = new Intent(this, MainActivity.class);
+        String id = "AlarmNotification";
+        intent.putExtra("ID_KEY", id);
+        PendingIntent sender = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);*/
+
+        //String id = "AlarmNotification";
+        //intent.putExtra("ID_KEY", id);
+        //PendingIntent sender = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 1, intent, PendingIntent.FLAG_ONE_SHOT);
+
+        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent Notifyintent = new Intent(this, SetAlarmBroadcastReceiver.class);
+        PendingIntent Notifysender = PendingIntent.getBroadcast(this, 0, Notifyintent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Calendar cal = Calendar.getInstance();
+        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 3600, Notifysender);
+
+
+        am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, Constants.NOTIFICATION_TIMEOUT, Constants.NOTIFICATION_TIMEOUT, pendingIntent);
+
+
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction("");
+        broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
+        broadcastIntent.putExtra("RESPONSE_STRING", "responseString");
+        sendBroadcast(broadcastIntent);
+
+        Intent alarmIntent = new Intent(this, SetAlarmBroadcastReceiver.class);
+        PendingIntent pendIntent = PendingIntent.getBroadcast(this, 1, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendIntent); //cancel if active already
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, Constants.NOTIFICATION_TIMEOUT, Constants.NOTIFICATION_TIMEOUT, pendIntent);
+
+        /*PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), 234324243, intent, 0);*/
+        /*AlarmManager alarmManager2 = (AlarmManager) getSystemService(ALARM_SERVICE);*/
+        /*alarmManager2.set(AlarmManager.ELAPSED_REALTIME, Constants.NOTIFICATION_TIMEOUT, pendingIntent);*/
     }
 
     private void sendAlert() {
+        Log.d("Niels", "sendAlert called");
         // Create an explicit content Intent that starts the main Activity.
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
 
@@ -59,14 +95,13 @@ public class NotificationService extends Service {
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(),
                         R.mipmap.ic_launcher))
                 .setColor(Color.RED)
-                .setVibrate(new long[]{0, 1000, 1000, 1000, 1000})
+                .setVibrate(new long[]{0, 1000})
                 .setContentTitle("Play Game of Words?")
                 .setContentText(getString(R.string.geofence_transition_notification_text))
                 .setContentIntent(notificationPendingIntent);
 
         // Dismiss notification once the user touches it.
         builder.setAutoCancel(true);
-
 
         // Get an instance of the Notification manager.
         final NotificationManager mNotificationManager =
@@ -86,11 +121,5 @@ public class NotificationService extends Service {
                 }
             }, delayInMilliseconds);
         }
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
     }
 }

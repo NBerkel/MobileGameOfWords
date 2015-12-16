@@ -129,7 +129,7 @@ public class rateWordsSlider extends Fragment {
         JSONArray sliderAnswers = new JSONArray();
         JSONArray sliderWords = MainActivity.sliderWords;
         int j = 0;
-        for (int i = 0; i < sliderLayoutHolder.getChildCount(); i++) {
+        for (int i = 0; i < 3; i++) {
             View v = sliderLayoutHolder.getChildAt(i);
             if (v instanceof SeekBar) {
                 JSONArray sliderAnswer = new JSONArray();

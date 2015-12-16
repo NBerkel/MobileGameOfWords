@@ -10,15 +10,15 @@
 
         <TextView android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginBottom="40dp"
-            android:layout_marginTop="70dp"
-            android:text="Game finished!" />
+            android:layout_marginBottom="22dp"
+            android:layout_marginTop="54dp"
+            android:text="Game finished - your final score is" />
 
         <TextView
             android:id="@+id/pointsTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="40dp"
+            android:layout_marginBottom="32dp"
             android:capitalize="characters"
             android:text="Calculating points ..."
             android:textSize="@dimen/abc_text_size_headline_material" />
@@ -27,7 +27,7 @@
             android:id="@+id/playAgainButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:layout_margin="16dp"
             android:width="120dp"
             android:text="Play again!" />
 
@@ -35,7 +35,7 @@
             android:id="@+id/backMainScreenButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_margin="6dp"
             android:width="120dp"
             android:text="Take me home" />
 

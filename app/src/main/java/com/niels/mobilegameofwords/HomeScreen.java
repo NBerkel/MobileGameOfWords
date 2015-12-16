@@ -96,7 +96,7 @@ public class HomeScreen extends Fragment {
 
         welcomeTextView = (TextView) view.findViewById(R.id.welcomeTextView);
 
-        if (nickname != "") {
+        if (nickname != null) {
             welcomeTextView.setText("Welcome back " + nickname + "!");
             // remove username input
             LinearLayout linearLayoutUsernameInput = (LinearLayout) view.findViewById(R.id.linearLayoutUsernameInput);

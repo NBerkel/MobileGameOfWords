@@ -21,7 +21,6 @@
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -31,6 +30,8 @@
                 <action android:name="ACTION_GAME_POINTS" />
             </intent-filter>
         </receiver>
+
+        <receiver android:name=".SetAlarmBroadcastReceiver"></receiver>
 
     </application>
 
