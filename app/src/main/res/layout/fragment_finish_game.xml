@@ -24,20 +24,12 @@
             android:textSize="@dimen/abc_text_size_headline_material" />
 
         <Button
-            android:id="@+id/playAgainButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:width="120dp"
-            android:text="Play again!" />
-
-        <Button
             android:id="@+id/backMainScreenButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="6dp"
             android:width="120dp"
-            android:text="Take me home" />
+            android:text="Play again!" />
 
     </LinearLayout>
 

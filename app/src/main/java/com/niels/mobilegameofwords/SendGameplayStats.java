@@ -12,6 +12,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.games.Game;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,6 +40,7 @@ public class SendGameplayStats {
 
         String word = GameplayStats.getWord();
         int score = GameplayStats.getScore();
+        int entry = GameplayStats.getEntry();
         
         Location gps_location = GameplayStats.getGPSLocation();
         float gps_accuracy = GameplayStats.getGPSAccuracy();
@@ -62,6 +64,7 @@ public class SendGameplayStats {
         gamePlayStats.put("gps_location", gps_location_string);
         gamePlayStats.put("gps_zone", gps_zone);
         gamePlayStats.put("gps_accuracy", gps_accuracy);
+        gamePlayStats.put("entry", entry);
 
         StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override

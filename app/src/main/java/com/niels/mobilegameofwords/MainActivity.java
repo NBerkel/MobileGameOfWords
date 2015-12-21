@@ -265,14 +265,17 @@ public class MainActivity extends AppCompatActivity
 
         if (getIntent() != null && getIntent().getExtras() != null) { //Launched from Notification
             if (getIntent().getExtras().containsKey("ID_KEY")) {
-                String intent = getIntent().getExtras().getString("ID_KEY");
                 //launched from notification
-                Log.d("Niels", "notification launch" + intent);
+                Log.d("Niels", "notification launch");
+                GameplayStats gameplayStats = new GameplayStats(getApplicationContext());
+                gameplayStats.setEntry(2);
                 getIntent().removeExtra("ID_KEY");
             }
         } else {
             //launched from launcher
             Log.d("Niels", "application launch");
+            GameplayStats gameplayStats = new GameplayStats(getApplicationContext());
+            gameplayStats.setEntry(1);
         }
 
         isActivityRunning = true;

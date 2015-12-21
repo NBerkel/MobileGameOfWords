@@ -95,7 +95,7 @@ public class rateWordsSlider extends Fragment {
         sliderLayoutHolder = (LinearLayout) view.findViewById(R.id.sliderLayoutHolder);
 
         JSONArray sliderWords = MainActivity.sliderWords;
-        for (int i = 0; i < sliderWords.length(); i++) {
+        for (int i = 0; i < 3; i++) {
             try {
                 addSlider(sliderWords.getJSONObject(i));
             } catch (JSONException e) {
@@ -158,7 +158,7 @@ public class rateWordsSlider extends Fragment {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(getContext());
         String url = "http://dss.simohosio.com/api/postrating.php";
-        //String url = "http://requestb.in/r8hy9er8";
+        //String url = "http://requestb.in/upk1t8up";
 
         StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -174,10 +174,13 @@ public class rateWordsSlider extends Fragment {
         }) {
             @Override
             protected Map<String, String> getParams() {
-                HashMap<String, String> params = new HashMap<String, String>();
-                params.put("json_ratings", sliderAnswersString);
-                params.put("user_id", "some_id");
-                params.put("meta", "META info");
+                // TODO LinkedHashMap ?
+//                LinkedHashMap<String, String> params = new LinkedHashMap<String, String>();
+//                params.put("json_ratings", sliderAnswersString);
+//                params.put("user_id", "some_id");
+//                params.put("meta", "META info");
+//                return params;
+                HashMap<String, String> params = new HashMap<>();
                 return params;
             }
 

@@ -14,8 +14,6 @@ import android.util.Log;
 public class SetAlarmBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("Niels", "hiii?");
-
         // Create an explicit content Intent that starts the main Activity.
         Intent notificationIntent = new Intent(context, MainActivity.class);
         notificationIntent.putExtra("ID_KEY", "notification");

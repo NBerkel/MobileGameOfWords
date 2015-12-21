@@ -73,8 +73,6 @@ public class finishGame extends Fragment {
         pointsTextView = (TextView) view.findViewById(R.id.pointsTextView);
 
         backMainScreenBtn = (Button) view.findViewById(R.id.backMainScreenButton);
-        playAgainBtn = (Button) view.findViewById(R.id.playAgainButton);
-
 
         backMainScreenBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,6 +85,9 @@ public class finishGame extends Fragment {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.container_body, fragment);
                 fragmentTransaction.commit();
+
+                GameplayStats gameplayStats = new GameplayStats(getContext());
+                gameplayStats.setEntry(3);
             }
         });
 

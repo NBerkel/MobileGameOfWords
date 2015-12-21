@@ -23,6 +23,7 @@ public class GameplayStats {
     static String word;
     private static Context context;
     private static int score;
+    private static int entry;
 
     public GameplayStats(Context _context) {
         context = _context;
@@ -30,6 +31,10 @@ public class GameplayStats {
 
     public static String getWord() {
         return word;
+    }
+
+    public void setEntry(int entry) {
+        GameplayStats.entry = entry;
     }
 
     public void setWord(String locRelevantWord) {
@@ -47,6 +52,8 @@ public class GameplayStats {
     public static String getGPSZone() {
         return gps_zone;
     }
+
+    public static int getEntry() {return entry; }
 
     public void setGPSZone(String gpsZone) {
         Log.d("Niels", "GPS zone set to " + gpsZone);
