@@ -82,6 +82,9 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        GameplayStats gameplayStats = new GameplayStats(getApplicationContext());
+        gameplayStats.setEntry(1);
+
         setContentView(R.layout.activity_main);
 
         checkUsername();

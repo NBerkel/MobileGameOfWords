@@ -7,7 +7,7 @@
 
 
     <!-- Error strings -->
-    <string name="not_connected">GoogleApiClient no yet connected. Try again.</string>
+    <string name="not_connected">GoogleApiClient not yet connected. Try again.</string>
     <string name="geofence_not_available">Geofence service is not available now</string>
     <string name="geofence_too_many_geofences">Your app has registered too many geofences</string>
     <string name="geofence_too_many_pending_intents">
@@ -25,4 +25,15 @@
     <string name="geofence_transition_exited">Exited</string>
     <string name="unknown_geofence_transition">Unknown Transition</string>
     <string name="geofence_transition_notification_text">...</string>
+
+    <!-- UI strings -->
+    <string name="welcome">Welcome to Game of Words!</string>
+    <string name="chooseNickname">Please choose a nickname.</string>
+    <string name="highscoresTitle">Highscores</string>
+    <string name="inputRelevantWordInstructions">Before you begin, please enter a word that you believe characterizes well the space you are currently in:</string>
+    <string name="sliderInstructions">Please adjust the slider values so that they best describe the space you are currently in.</string>
+    <string name="finishedScore">Game finished - your final score is</string>
+    <string name="calculatingScore">Calculating score ...</string>
+    <string name="playAgain">Play again!</string>
+
 </resources>

@@ -45,31 +45,10 @@ public class HomeScreen extends Fragment {
     EditText usernameEditText;
     String fileName = "nicknamem";
     DBGetLeaderBoard dbGetLeaderboard;
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private OnFragmentInteractionListener mListener;
 
     public HomeScreen() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeScreen.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static HomeScreen newInstance(String param1, String param2) {
-        HomeScreen fragment = new HomeScreen();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     public static String getNickname() {
@@ -79,11 +58,6 @@ public class HomeScreen extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -159,8 +133,6 @@ public class HomeScreen extends Fragment {
 
         ArrayList nicknames = dbGetLeaderboard.nicknames;
         for (int i = 0; i < nicknames.size(); i++) {
-            //System.out.println(nicknames.get(i));
-
             String nickname = "";
             JSONObject jObj = (JSONObject) nicknames.get(i);
             try {
@@ -173,7 +145,6 @@ public class HomeScreen extends Fragment {
                 Toast.makeText(getContext(), "Username already in use", Toast.LENGTH_SHORT).show();
                 return false;
             }
-
         }
         return true;
     }

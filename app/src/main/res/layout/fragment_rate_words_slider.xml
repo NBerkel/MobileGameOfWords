@@ -9,9 +9,9 @@
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/sliderLayoutHolder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/sliderLayoutHolder"
             android:orientation="vertical"
             android:paddingBottom="@dimen/activity_vertical_margin"
             android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -22,7 +22,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_horizontal"
-                android:text="DETERMINE CORRECT SLIDER LABELS. Slider instructions go here. Slider instructions go here. Slider instructions go here." />
+                android:text="@string/sliderInstructions"
+                android:textSize="18dp" />
 
         </LinearLayout>
 

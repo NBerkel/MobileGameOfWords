@@ -28,9 +28,7 @@ public class DBGetLeaderBoard {
 
     public Activity activity;
     ArrayList nicknames = new ArrayList();
-    ArrayList scores;
     ArrayList<highScoreEntry> leaderBoard;
-    ArrayList<highScoreEntry> highScoreEntry;
 
     public DBGetLeaderBoard(Activity _activity) {
         this.activity = _activity;
@@ -71,8 +69,6 @@ public class DBGetLeaderBoard {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //playGameBtn.setEnabled(false);
-                //TODO Call error class!!
                 Log.d("GameOfWords", String.valueOf(error));
             }
         });
@@ -85,7 +81,7 @@ public class DBGetLeaderBoard {
 
         try {
             JSONArray strJson = new JSONArray(response);
-            for (int i = 0; i < strJson.length(); i++) {
+            for (int i = 0; i < 5; i++) {
 
                 JSONObject object = strJson.getJSONObject(i);
 
@@ -109,7 +105,6 @@ public class DBGetLeaderBoard {
         LinearLayout leaderboardScoresLayout = (LinearLayout) activity.findViewById(R.id.leaderboardScoresLayout);
 
         for (int i = 0; i < leaderBoard.size(); i++) {
-
             String nickname = leaderBoard.get(i).nickname;
             String score = String.valueOf(leaderBoard.get(i).score);
 

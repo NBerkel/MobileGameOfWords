@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:gravity="center"
-            android:text="Welcome to Game of Words!"
+            android:text="@string/welcome"
             android:textSize="20sp" />
 
         <LinearLayout
@@ -47,7 +47,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Please choose a nickname!"
+                android:text="@string/chooseNickname"
                 android:textSize="18sp" />
 
             <EditText
@@ -65,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Highscores" />
+            android:text="@string/highscoresTitle" />
 
         <LinearLayout
             android:layout_width="fill_parent"

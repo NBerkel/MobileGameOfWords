@@ -14,8 +14,8 @@ public class Constants {
     public static final long GEOFENCE_EXPIRATION_IN_HOURS = -1; // No expiration
     public static final int GEOFENCES_LOITERING_DELAY = 3000; // 3 seconds.
     public static final float GEOFENCE_RADIUS_IN_METERS = 70;
-    //public static final int NOTIFICATION_TIMEOUT = 3600000; // 60 minutes. TODO change to something more sensible.
-    public static final int NOTIFICATION_TIMEOUT = 5000; // test. TODO change to something more sensible.
+    public static final int NOTIFICATION_TIMEOUT = 3600000; // 60 minutes. TODO change to something more sensible.
+    //public static final int NOTIFICATION_TIMEOUT = 3000; // test. TODO change to something more sensible.
 
     public static final int NOTIFICATION_DISMISS_TIME = 60000; //1 minute. TODO change to something more sensible.
     /**

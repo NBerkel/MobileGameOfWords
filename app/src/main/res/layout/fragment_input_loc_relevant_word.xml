@@ -17,7 +17,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_horizontal"
-            android:text="Input location relevant word. Input location relevant word. Input location relevant word. Input location relevant word. Input location relevant word" />
+            android:text="@string/inputRelevantWordInstructions"
+            android:textSize="18dp" />
 
         <EditText
             android:id="@+id/locRelevantEditText"
