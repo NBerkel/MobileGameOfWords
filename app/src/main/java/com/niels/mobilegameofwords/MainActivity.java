@@ -104,7 +104,6 @@ public class MainActivity extends AppCompatActivity
 
         addGeofenceList(this);
 
-
         getCriteria();
         // Start ESM notification counter
         startAlarm();

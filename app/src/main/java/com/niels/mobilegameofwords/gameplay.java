@@ -124,6 +124,9 @@ public class gameplay extends Fragment {
         leftCircleImageView = (ImageView) view.findViewById(R.id.leftCircleImageView);
         rightCircleImageView = (ImageView) view.findViewById(R.id.rightCircleImageView);
 
+        words = new ArrayList<>();
+        wordsUserRating = new ArrayList<>();
+
         rightCircleImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -173,9 +176,6 @@ public class gameplay extends Fragment {
     }
 
     private void setGameWords(String response) {
-        words = new ArrayList<>();
-        wordsUserRating = new ArrayList<>();
-
         try {
             JSONArray strJson = new JSONArray(response);
             for (int i = 0; i < strJson.length(); i++) {

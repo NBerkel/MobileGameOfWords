@@ -16,11 +16,22 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -95,12 +106,16 @@ public class HomeScreen extends Fragment {
                         // Write text file with username
                         String content = String.valueOf(usernameEditText.getText());
 
-                        Log.d("Niels", "Create file");
                         FileOutputStream outputStream;
                         try {
+                            // Create file with nickname
                             outputStream = getContext().getApplicationContext().openFileOutput(fileName, Context.MODE_PRIVATE);
                             outputStream.write(content.getBytes());
                             outputStream.close();
+                            // Store nickname in DB
+                            insertNicknameDB(content);
+                            // Store nickname in variable
+                            nickname = content;
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -147,6 +162,46 @@ public class HomeScreen extends Fragment {
             }
         }
         return true;
+    }
+
+    private void insertNicknameDB(String nickname) throws JSONException {
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        String url = MainActivity.getIP() + "addnewnickname.php";
+
+        final JSONObject nicknameObj = new JSONObject();
+        nicknameObj.put("nickname", nickname);
+
+        StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("GameOfWords", response.toString());
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("GameOfWords", "Error: " + error.getMessage());
+                Log.d("GameOfWords", "" + error.getMessage() + "," + error.toString());
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("nickname", String.valueOf(nicknameObj));
+                return params;
+            }
+
+            /** Passing some request headers * */
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        queue.add(sr);
     }
 
     @Override
