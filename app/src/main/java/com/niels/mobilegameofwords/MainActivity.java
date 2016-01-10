@@ -105,8 +105,6 @@ public class MainActivity extends AppCompatActivity
         addGeofenceList(this);
 
         getCriteria();
-        // Start ESM notification counter
-        startAlarm();
     }
 
     private void startAlarm() {
@@ -249,6 +247,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
+
+        // Start ESM notification
+        startAlarm();
 
         // Stop collecting GPS TODO, does not work
         LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);

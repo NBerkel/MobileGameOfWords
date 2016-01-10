@@ -30,7 +30,7 @@
     <string name="welcome">Welcome to Game of Words!</string>
     <string name="chooseNickname">Please choose a nickname.</string>
     <string name="highscoresTitle">Highscores</string>
-    <string name="inputRelevantWordInstructions">Before you begin, please enter a word that you believe characterizes well the space you are currently in:</string>
+    <string name="inputRelevantWordInstructions">Before you begin, please enter a word that you believe characterises well the space you are currently in:</string>
     <string name="sliderInstructions">Please adjust the slider values so that they best describe the space you are currently in.</string>
     <string name="finishedScore">Game finished - your final score is</string>
     <string name="calculatingScore">Calculating score ...</string>

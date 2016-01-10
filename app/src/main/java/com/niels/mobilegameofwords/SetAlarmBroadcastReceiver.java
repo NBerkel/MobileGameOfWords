@@ -7,9 +7,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
+
+import java.util.Calendar;
 
 public class SetAlarmBroadcastReceiver extends BroadcastReceiver {
     @Override
@@ -52,19 +55,20 @@ public class SetAlarmBroadcastReceiver extends BroadcastReceiver {
         // Get an instance of the Notification manager.
         final NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // Issue the notification - only if application is not open.
-        if (MainActivity.isActivityRunning != true) {
+        // Issue the notification - only if application is not open and time is not within restricted area (between 22:00 & 08:00)
+        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        if (MainActivity.isActivityRunning != true && hour <= 21 && hour >= 8 ) {
             mNotificationManager.notify(0, builder.build());
 
-            // Dismiss notification after a set amount of time. TODO?
-            /*Handler h = new Handler();
+            // Dismiss notification after a set amount of time.
+            Handler h = new Handler();
             long delayInMilliseconds = Constants.NOTIFICATION_DISMISS_TIME;
             h.postDelayed(new Runnable() {
                 public void run() {
                     mNotificationManager.cancel(0);
                     Log.d("Niels", "Notification cancelled");
                 }
-            }, delayInMilliseconds);*/
+            }, delayInMilliseconds);
         }
     }
 }

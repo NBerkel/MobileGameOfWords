@@ -124,8 +124,6 @@ public class GeoFenceTransitionIntentService extends IntentService {
         ArrayList triggeringGeofencesIdsList = new ArrayList();
         for (Geofence geofence : triggeringGeofences) {
             triggeringGeofencesIdsList.add(geofence.getRequestId());
-
-            Log.d("Niels", "...");
         }
         String triggeringGeofencesIdsString = TextUtils.join(", ", triggeringGeofencesIdsList);
 
@@ -179,7 +177,7 @@ public class GeoFenceTransitionIntentService extends IntentService {
 
         // Dismiss notification after a set amount of time.
         Handler h = new Handler();
-        long delayInMilliseconds = 5000;
+        long delayInMilliseconds = Constants.NOTIFICATION_DISMISS_TIME;
         h.postDelayed(new Runnable() {
             public void run() {
                 mNotificationManager.cancel(0);
