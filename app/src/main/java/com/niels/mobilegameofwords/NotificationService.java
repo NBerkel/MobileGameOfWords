@@ -33,20 +33,20 @@ public class NotificationService extends IntentService {
         Intent NotifyIntent = new Intent(this, SetAlarmBroadcastReceiver.class); // this is the actual notification
         PendingIntent NotifySender = PendingIntent.getBroadcast(this, 0, NotifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         Calendar cal = Calendar.getInstance();
-        //am.setInexactRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 3600, Notifysender);
         am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, cal.getTimeInMillis(), Constants.NOTIFICATION_TIMEOUT, NotifySender);
 
-        Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction("");
-        broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
-        broadcastIntent.putExtra("RESPONSE_STRING", "responseString");
-        sendBroadcast(broadcastIntent);
-
-        Intent alarmIntent = new Intent(this, SetAlarmBroadcastReceiver.class);
-        PendingIntent pendIntent = PendingIntent.getBroadcast(this, 1, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(pendIntent); //cancel if active already
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, Constants.NOTIFICATION_TIMEOUT, Constants.NOTIFICATION_TIMEOUT, pendIntent);
+        // ???
+//        Intent broadcastIntent = new Intent();
+//        broadcastIntent.setAction("");
+//        broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
+//        broadcastIntent.putExtra("RESPONSE_STRING", "responseString");
+//        sendBroadcast(broadcastIntent);
+//
+//        Intent alarmIntent = new Intent(this, SetAlarmBroadcastReceiver.class);
+//        PendingIntent pendIntent = PendingIntent.getBroadcast(this, 1, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//        alarmManager.cancel(pendIntent); //cancel if active already
+//        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, Constants.NOTIFICATION_TIMEOUT, Constants.NOTIFICATION_TIMEOUT, pendIntent);
     }
 }

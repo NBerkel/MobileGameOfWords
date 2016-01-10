@@ -59,16 +59,16 @@ public class SetAlarmBroadcastReceiver extends BroadcastReceiver {
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         if (MainActivity.isActivityRunning != true && hour <= 21 && hour >= 8 ) {
             mNotificationManager.notify(0, builder.build());
-
-            // Dismiss notification after a set amount of time.
-            Handler h = new Handler();
-            long delayInMilliseconds = Constants.NOTIFICATION_DISMISS_TIME;
-            h.postDelayed(new Runnable() {
-                public void run() {
-                    mNotificationManager.cancel(0);
-                    Log.d("Niels", "Notification cancelled");
-                }
-            }, delayInMilliseconds);
         }
+
+        // Dismiss notification after a set amount of time.
+        Handler h = new Handler();
+        long delayInMilliseconds = Constants.NOTIFICATION_DISMISS_TIME;
+        h.postDelayed(new Runnable() {
+            public void run() {
+                mNotificationManager.cancel(0);
+                Log.d("Niels", "Notification cancelled");
+            }
+        }, delayInMilliseconds);
     }
 }
