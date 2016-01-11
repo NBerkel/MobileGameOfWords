@@ -12,7 +12,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.games.Game;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,9 +31,6 @@ public class SendGameplayStats {
     }
 
     public void UpdateStatsDB() throws JSONException {
-        // We can stop updating GameplayStats
-        GameplayStats.stopGPS();
-
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(mContext);
 
@@ -56,15 +52,15 @@ public class SendGameplayStats {
 
         String url = MainActivity.getIP() + "updategameplaystats.php";
 
-        final JSONObject gamePlayStats = new JSONObject();
-        gamePlayStats.put("nickname", nickname);
-        gamePlayStats.put("word", word);
-        gamePlayStats.put("score", score);
+        final JSONObject gamePlayStatsJSON = new JSONObject();
+        gamePlayStatsJSON.put("nickname", nickname);
+        gamePlayStatsJSON.put("word", word);
+        gamePlayStatsJSON.put("score", score);
         String gps_location_string = gps_location.getLatitude() + "," + gps_location.getLongitude();
-        gamePlayStats.put("gps_location", gps_location_string);
-        gamePlayStats.put("gps_zone", gps_zone);
-        gamePlayStats.put("gps_accuracy", gps_accuracy);
-        gamePlayStats.put("entry", entry);
+        gamePlayStatsJSON.put("gps_location", gps_location_string);
+        gamePlayStatsJSON.put("gps_zone", gps_zone);
+        gamePlayStatsJSON.put("gps_accuracy", gps_accuracy);
+        gamePlayStatsJSON.put("entry", entry);
 
         StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -81,7 +77,7 @@ public class SendGameplayStats {
             @Override
             protected Map<String, String> getParams() {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("gameplayStats", String.valueOf(gamePlayStats));
+                params.put("gameplayStats", String.valueOf(gamePlayStatsJSON));
                 return params;
             }
 

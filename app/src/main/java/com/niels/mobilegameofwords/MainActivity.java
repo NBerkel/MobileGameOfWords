@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -56,7 +57,9 @@ public class MainActivity extends AppCompatActivity
     protected ArrayList<Geofence> mGeofenceList;
 
     String fileName = "nicknamem";
-
+    //private static GameplayStats.GeoUpdateHandler geoUpdateHandler;
+    LocationListener ll;
+    LocationManager lm;
     /**
      * Used to keep track of whether geofences were added.
      */
@@ -82,7 +85,15 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        GameplayStats gameplayStats = new GameplayStats(getApplicationContext());
+        //geoUpdateHandler = new GameplayStats.GeoUpdateHandler();
+        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        ll = new GameplayStats.GeoUpdateHandler();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, ll);
+
+        gameplayStats = new GameplayStats(getApplicationContext());
         gameplayStats.setEntry(1);
 
         setContentView(R.layout.activity_main);
@@ -97,10 +108,10 @@ public class MainActivity extends AppCompatActivity
         //fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
-        gameplayStats = new GameplayStats(this);
+        //gameplayStats = new GameplayStats(this);
         // Initialise with "other" zone
         gameplayStats.setGPSZone("Other");
-        gameplayStats.startGPSSensor();
+        gameplayStats.startGPSSensor(lm, ll);
 
         addGeofenceList(this);
 
@@ -197,7 +208,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void addGeofenceList(Context context) {
-
         // Empty list for storing geofences.
         mGeofenceList = new ArrayList<Geofence>();
 
@@ -250,21 +260,17 @@ public class MainActivity extends AppCompatActivity
 
         // Start ESM notification
         startAlarm();
+        // Stop GPS collection
+        gameplayStats.stopGPSSensor(lm, ll);
 
-        // Stop collecting GPS TODO, does not work
-        LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling ActivityCompat#requestPermissions here to request the missing permissions
-            return;
-        }
-        locationManager.removeUpdates(GameplayStats.locationListener);
         isActivityRunning = false;
-        Log.d("Niels", "isActivityRunning " + isActivityRunning);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        gameplayStats.startGPSSensor(lm, ll);
 
         if (getIntent() != null && getIntent().getExtras() != null) { //Launched from Notification
             if (getIntent().getExtras().containsKey("ID_KEY")) {
@@ -282,8 +288,6 @@ public class MainActivity extends AppCompatActivity
         }
 
         isActivityRunning = true;
-        Log.d("Niels", "isActivityRunning " + isActivityRunning);
-        //TODO Restart GPS sensor
     }
 
     /**

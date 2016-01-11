@@ -33,10 +33,6 @@ public class GameplayStats {
         return word;
     }
 
-    public void setEntry(int entry) {
-        GameplayStats.entry = entry;
-    }
-
     public void setWord(String locRelevantWord) {
         word = locRelevantWord;
     }
@@ -53,11 +49,17 @@ public class GameplayStats {
         return gps_zone;
     }
 
-    public static int getEntry() {return entry; }
-
     public void setGPSZone(String gpsZone) {
         Log.d("Niels", "GPS zone set to " + gpsZone);
         gps_zone = gpsZone;
+    }
+
+    public static int getEntry() {
+        return entry;
+    }
+
+    public void setEntry(int entry) {
+        GameplayStats.entry = entry;
     }
 
     public static int getScore() {
@@ -68,77 +70,13 @@ public class GameplayStats {
         score = achievedScore;
     }
 
-    public static void stopGPS() {
-        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        locationManager.removeUpdates(locationListener);
-    }
-
-    public void setGPSLocation() {
-        startGPSSensor();
-        //gps_location = String.valueOf(10);
-    }
-
-    // http://developer.android.com/guide/topics/location/strategies.html
-    public void startGPSSensor() {
-        // Acquire a reference to the system Location Manager
-        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-
-        // Define a listener that responds to location updates
-        locationListener = new LocationListener() {
-            public void onLocationChanged(Location location) {
-                // Called when a new location is found by the network location provider.
-
-                // Check if location is better estimate.
-                if (isBetterLocation(location, gps_location)) {
-                    gps_location = location;
-                    gps_accuracy = location.getAccuracy();
-                    Log.d("NielsGPS", "location updated; " + location);
-                } else {
-                    // Do nothing.
-                }
-            }
-
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-
-            public void onProviderEnabled(String provider) {
-            }
-
-            public void onProviderDisabled(String provider) {
-            }
-        };
-
-        // Register the listener with the Location Manager to receive location updates
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            Log.d("NielsGPS", "GPS permission not set!");
-            return;
-        }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-        //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-    }
-
-    /** Determines whether one Location reading is better than the current Location fix
-     * @param location  The new Location that you want to evaluate
-     * @param currentBestLocation  The current Location fix, to which you want to compare the new one
+    /**
+     * Determines whether one Location reading is better than the current Location fix
+     *
+     * @param location            The new Location that you want to evaluate
+     * @param currentBestLocation The current Location fix, to which you want to compare the new one
      */
-    protected boolean isBetterLocation(Location location, Location currentBestLocation) {
+    protected static boolean isBetterLocation(Location location, Location currentBestLocation) {
         if (currentBestLocation == null) {
             // A new location is always better than no location
             return true;
@@ -174,6 +112,56 @@ public class GameplayStats {
             return true;
         }
         return false;
+    }
+
+    // http://developer.android.com/guide/topics/location/strategies.html
+    public void startGPSSensor(LocationManager lm, LocationListener ll) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, ll);
+    }
+
+    public void stopGPSSensor(LocationManager lm, LocationListener ll) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        if (lm != null) {
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            lm.removeUpdates(ll);
+        }
+        ll = null;
+        lm = null;
+        Log.d("Niels", "Stop GPS called");
+    }
+
+    public static class GeoUpdateHandler implements LocationListener {
+        @Override
+        public void onLocationChanged(Location location) {
+            // Check if location is better estimate.
+            if (isBetterLocation(location, gps_location)) {
+                gps_location = location;
+                gps_accuracy = location.getAccuracy();
+                Log.d("NielsGPS", "location updated; " + location);
+            } else {
+                // Do nothing.
+            }
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
     }
 
 

@@ -38,6 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
                 android:capitalize="characters"
+                android:inputType="textNoSuggestions"
                 android:text="@string/calculatingScore"
                 android:textSize="@dimen/abc_text_size_headline_material" />
 

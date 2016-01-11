@@ -55,7 +55,7 @@ public class HomeScreen extends Fragment {
     Button playGameBtn;
     EditText usernameEditText;
     String fileName = "nicknamem";
-    DBGetLeaderBoard dbGetLeaderboard;
+    com.niels.mobilegameofwords.dbGetLeaderboard dbGetLeaderboard;
     private OnFragmentInteractionListener mListener;
 
     public HomeScreen() {
@@ -76,7 +76,7 @@ public class HomeScreen extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home_screen, container, false);
 
-        dbGetLeaderboard = new DBGetLeaderBoard(getActivity());
+        dbGetLeaderboard = new dbGetLeaderboard(getActivity());
         dbGetLeaderboard.getLeaderboard(getContext());
 
         welcomeTextView = (TextView) view.findViewById(R.id.welcomeTextView);

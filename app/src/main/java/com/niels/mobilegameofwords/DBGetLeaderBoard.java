@@ -24,13 +24,13 @@ import java.util.Collections;
 /**
  * Created by niels on 27/11/15.
  */
-public class DBGetLeaderBoard {
+public class dbGetLeaderboard {
 
     public Activity activity;
     ArrayList nicknames = new ArrayList();
     ArrayList<highScoreEntry> leaderBoard;
 
-    public DBGetLeaderBoard(Activity _activity) {
+    public dbGetLeaderboard(Activity _activity) {
         this.activity = _activity;
     }
 
