@@ -74,6 +74,8 @@ public class finishGame extends Fragment {
 
         backMainScreenBtn = (Button) view.findViewById(R.id.backMainScreenButton);
 
+        GameplayStats.setEndTime();
+
         backMainScreenBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

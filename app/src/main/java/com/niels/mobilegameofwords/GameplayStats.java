@@ -22,6 +22,8 @@ public class GameplayStats {
     static LocationListener locationListener;
     static String word;
     static int gamified;
+    static String startTime;
+    static String endTime;
     private static Context context;
     private static int score;
     private static int entry;
@@ -63,6 +65,24 @@ public class GameplayStats {
         gps_zone = gpsZone;
     }
 
+    public static void setStartTime() {
+        Long tsLong = System.currentTimeMillis() / 1000;
+        startTime = tsLong.toString();
+    }
+
+    public static String getStartTime() {
+        return startTime;
+    }
+
+    public static void setEndTime() {
+        Long tsLong = System.currentTimeMillis() / 1000;
+        endTime = tsLong.toString();
+    }
+
+    public static String getEndTime() {
+        return endTime;
+    }
+
     public static int getEntry() {
         return entry;
     }
@@ -78,6 +98,7 @@ public class GameplayStats {
     public void setScore(int achievedScore) {
         score = achievedScore;
     }
+
 
     /**
      * Determines whether one Location reading is better than the current Location fix

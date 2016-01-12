@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity
     protected GoogleApiClient mGoogleApiClient;
     protected ArrayList<Geofence> mGeofenceList;
 
-    String fileName = "nicknamem";
+    String fileName = "nickname";
     //private static GameplayStats.GeoUpdateHandler geoUpdateHandler;
     LocationListener ll;
     LocationManager lm;

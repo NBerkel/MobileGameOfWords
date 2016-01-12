@@ -197,6 +197,8 @@ public class HomeScreen extends Fragment {
     }
 
     private void startGame() {
+        GameplayStats.setStartTime();
+
         LinearLayout intro_text = (LinearLayout) view.findViewById(R.id.intro_text);
         intro_text.setVisibility(View.GONE);
 
