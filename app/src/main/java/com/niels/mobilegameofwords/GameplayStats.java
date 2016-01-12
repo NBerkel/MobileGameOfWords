@@ -21,6 +21,7 @@ public class GameplayStats {
     static String gps_zone;
     static LocationListener locationListener;
     static String word;
+    static int gamified;
     private static Context context;
     private static int score;
     private static int entry;
@@ -35,6 +36,14 @@ public class GameplayStats {
 
     public void setWord(String locRelevantWord) {
         word = locRelevantWord;
+    }
+
+    public static int getGamified() {
+        return gamified;
+    }
+
+    public void setGamified(int _gamified) {
+        gamified = _gamified;
     }
 
     public static Location getGPSLocation() {

@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.niels.mobilegameofwords" >
+    package="com.niels.mobilegameofwords">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
-        android:name="GameOfWords"
+        android:name=".GameOfWords"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@android:style/Theme.NoTitleBar" >
-        <service android:name=".GeoFenceTransitionIntentService"/>
+        android:theme="@android:style/Theme.NoTitleBar">
+        <service android:name=".GeoFenceTransitionIntentService" />
         <service android:name=".NotificationService" />
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -30,9 +32,14 @@
                 <action android:name="ACTION_GAME_POINTS" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".SetAlarmBroadcastReceiver" />
 
-        <receiver android:name=".SetAlarmBroadcastReceiver"></receiver>
-
+        <activity
+            android:name=".app.SecondActivity"
+            android:label="@string/title_activity_second" />
+        <activity
+            android:name=".nongamified.SecondActivity"
+            android:label="@string/title_activity_second"></activity>
     </application>
 
 </manifest>

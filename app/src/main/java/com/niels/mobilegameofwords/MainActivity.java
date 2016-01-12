@@ -96,6 +96,12 @@ public class MainActivity extends AppCompatActivity
         gameplayStats = new GameplayStats(getApplicationContext());
         gameplayStats.setEntry(1);
 
+        if (BuildConfig.FLAVOR.equals("gamified")) {
+            gameplayStats.setGamified(1);
+        } else if (BuildConfig.FLAVOR.equals("nongamified")) {
+            gameplayStats.setGamified(0);
+        }
+
         setContentView(R.layout.activity_main);
 
         checkUsername();
@@ -426,6 +432,4 @@ public class MainActivity extends AppCompatActivity
                     .build());
         }
     }
-
-
 }

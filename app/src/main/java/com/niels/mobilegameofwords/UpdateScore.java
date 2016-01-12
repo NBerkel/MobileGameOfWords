@@ -40,10 +40,12 @@ public class UpdateScore {
         String url = MainActivity.getIP() + "updatescore.php";
 
         String nickname = HomeScreen.getNickname();
+        int gamified = GameplayStats.getGamified();
 
         final JSONObject userScore = new JSONObject();
         userScore.put("nickname", nickname);
         userScore.put("score", achievedScore);
+        userScore.put("gamified", gamified);
 
         StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override

@@ -33,20 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link HomeScreen.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link HomeScreen#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class HomeScreen extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     public static boolean enablePlayBtn;
     public static String nickname;
     static Boolean userAlreadyExists = false;
@@ -54,9 +41,8 @@ public class HomeScreen extends Fragment {
     TextView welcomeTextView;
     Button playGameBtn;
     EditText usernameEditText;
-    String fileName = "nicknamem";
+    String fileName = "nickname";
     com.niels.mobilegameofwords.dbGetLeaderboard dbGetLeaderboard;
-    private OnFragmentInteractionListener mListener;
 
     public HomeScreen() {
         // Required empty public constructor
@@ -131,13 +117,6 @@ public class HomeScreen extends Fragment {
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     private boolean checkUsernameInput() {
         String userNameText = usernameEditText.getText().toString();
         if (userNameText.matches("")) {
@@ -169,8 +148,11 @@ public class HomeScreen extends Fragment {
         RequestQueue queue = Volley.newRequestQueue(getContext());
         String url = MainActivity.getIP() + "addnewnickname.php";
 
+        int gamified = GameplayStats.getGamified();
+
         final JSONObject nicknameObj = new JSONObject();
         nicknameObj.put("nickname", nickname);
+        nicknameObj.put("gamified", gamified);
 
         StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -212,7 +194,6 @@ public class HomeScreen extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     private void startGame() {

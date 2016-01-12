@@ -37,6 +37,7 @@ public class SendGameplayStats {
         String word = GameplayStats.getWord();
         int score = GameplayStats.getScore();
         int entry = GameplayStats.getEntry();
+        int gamified = GameplayStats.getGamified();
         
         Location gps_location = GameplayStats.getGPSLocation();
         float gps_accuracy = GameplayStats.getGPSAccuracy();
@@ -61,6 +62,7 @@ public class SendGameplayStats {
         gamePlayStatsJSON.put("gps_zone", gps_zone);
         gamePlayStatsJSON.put("gps_accuracy", gps_accuracy);
         gamePlayStatsJSON.put("entry", entry);
+        gamePlayStatsJSON.put("gamified", gamified);
 
         StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override

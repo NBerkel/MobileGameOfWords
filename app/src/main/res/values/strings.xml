@@ -31,5 +31,6 @@
     <string name="finishedScore">Game finished - your final score is</string>
     <string name="calculatingScore">Calculating score ...</string>
     <string name="playAgain">Play again!</string>
+    <string name="title_activity_second">SecondActivity</string>
 
 </resources>

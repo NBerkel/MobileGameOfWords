@@ -17,6 +17,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    productFlavors {
+        gamified {
+            applicationId "com.niels.mobilegameofwords.gamified"
+            versionName "1.0-g"
+        }
+        nongamified {
+            applicationId "com.niels.mobilegameofwords.nongamified"
+            versionName "1.0-ng"
+        }
+    }
 }
 
 dependencies {

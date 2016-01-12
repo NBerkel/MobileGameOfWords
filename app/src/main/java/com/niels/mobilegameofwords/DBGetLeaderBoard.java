@@ -97,7 +97,9 @@ public class dbGetLeaderboard {
 
         Collections.sort(leaderBoard);
 
-        setLeaderboardText();
+        if (BuildConfig.FLAVOR.equals("gamified")) {
+            setLeaderboardText();
+        }
     }
 
     void setLeaderboardText() {
