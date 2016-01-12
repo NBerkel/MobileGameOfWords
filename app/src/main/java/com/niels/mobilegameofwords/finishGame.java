@@ -87,7 +87,7 @@ public class finishGame extends Fragment {
                 fragmentTransaction.commit();
 
                 GameplayStats gameplayStats = new GameplayStats(getContext());
-                gameplayStats.setEntry(3);
+                gameplayStats.setEntry(4);
             }
         });
 

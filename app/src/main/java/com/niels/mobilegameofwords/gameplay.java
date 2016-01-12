@@ -14,7 +14,6 @@ import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -36,7 +35,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -53,7 +51,6 @@ public class gameplay extends Fragment {
     View view;
     TextView currentGameWord;
     TextView wordProgress;
-    Button finishBtn;
     ImageView leftCircleImageView;
     ImageView rightCircleImageView;
     List<String> words;
@@ -120,7 +117,6 @@ public class gameplay extends Fragment {
         view = inflater.inflate(R.layout.fragment_gameplay, container, false);
         currentGameWord = (TextView) view.findViewById(R.id.currentGameWord);
         wordProgress = (TextView) view.findViewById(R.id.wordProgress);
-        finishBtn = (Button) view.findViewById(R.id.finishBtn);
         leftCircleImageView = (ImageView) view.findViewById(R.id.leftCircleImageView);
         rightCircleImageView = (ImageView) view.findViewById(R.id.rightCircleImageView);
 
@@ -137,13 +133,6 @@ public class gameplay extends Fragment {
             @Override
             public void onClick(View v) {
                 irrelevantBtnPressed();
-            }
-        });
-
-        finishBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finishGame();
             }
         });
 

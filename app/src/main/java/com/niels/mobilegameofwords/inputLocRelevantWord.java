@@ -100,13 +100,13 @@ public class inputLocRelevantWord extends Fragment {
         StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d("GameOfWords", response.toString());
+                Log.d("GameOfWords SendNewWord", response.toString());
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d("GameOfWords", "Error: " + error.getMessage());
-                Log.d("GameOfWords", "" + error.getMessage() + "," + error.toString());
+                Log.d("GameOfWords SendNewWord", "" + error.getMessage() + "," + error.toString());
             }
         }) {
             @Override

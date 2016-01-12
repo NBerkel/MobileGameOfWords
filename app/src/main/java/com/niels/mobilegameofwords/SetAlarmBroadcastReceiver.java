@@ -17,6 +17,8 @@ import java.util.Calendar;
 public class SetAlarmBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.d("Niels", "SetAlarmBroadcastReceiver");
+
         // Create an explicit content Intent that starts the main Activity.
         Intent notificationIntent = new Intent(context, MainActivity.class);
         notificationIntent.putExtra("ID_KEY", "notification");
@@ -44,9 +46,9 @@ public class SetAlarmBroadcastReceiver extends BroadcastReceiver {
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(),
                         R.mipmap.ic_launcher))
                 .setColor(Color.RED)
-                .setVibrate(new long[]{0, 1000})
+                .setVibrate(new long[]{0, 1400})
                 .setContentTitle("Play Game of Words?")
-                .setContentText("notification")
+                .setContentText(context.getString(R.string.notification_text))
                 .setContentIntent(notificationPendingIntent);
 
         // Dismiss notification once the user touches it.

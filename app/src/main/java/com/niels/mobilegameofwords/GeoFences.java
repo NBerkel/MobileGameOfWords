@@ -215,10 +215,6 @@ public class GeoFences extends AppCompatActivity
         return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    /**
-     * This sample hard codes geofence data. A real app might dynamically create geofences based on
-     * the user's location.
-     */
     public void populateGeofenceList() {
         for (Map.Entry<String, LatLng> entry : Constants.OULU_LANDMARKS.entrySet()) {
             mGeofenceList.add(new Geofence.Builder()

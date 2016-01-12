@@ -274,10 +274,17 @@ public class MainActivity extends AppCompatActivity
 
         if (getIntent() != null && getIntent().getExtras() != null) { //Launched from Notification
             if (getIntent().getExtras().containsKey("ID_KEY")) {
-                //launched from notification
-                Log.d("Niels", "notification launch");
+
                 GameplayStats gameplayStats = new GameplayStats(getApplicationContext());
-                gameplayStats.setEntry(2);
+                if (getIntent().getStringExtra("ID_KEY") == "geoNotification") {
+                    gameplayStats.setEntry(3);
+                    //launched from geo notification
+                    Log.d("Niels", "geo notification launch");
+                } else {
+                    gameplayStats.setEntry(2);
+                    //launched from time notification
+                    Log.d("Niels", "time notification launch");
+                }
                 getIntent().removeExtra("ID_KEY");
             }
         } else {

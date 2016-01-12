@@ -7,58 +7,51 @@
         android:id="@+id/leftCircleImageView"
         android:layout_width="200dp"
         android:layout_height="200dp"
+        android:layout_gravity="left|center_vertical"
         android:layout_marginLeft="-100dp"
-        android:src="@mipmap/ic_circle"
-        android:layout_gravity="left|center_vertical" />
+        android:src="@mipmap/ic_circle" />
 
     <ImageView
         android:id="@+id/rightCircleImageView"
         android:layout_width="200dp"
         android:layout_height="200dp"
+        android:layout_gravity="right|center_vertical"
         android:layout_marginRight="-100dp"
-        android:src="@mipmap/ic_circle"
-        android:layout_gravity="right|center_vertical" />
+        android:src="@mipmap/ic_circle" />
 
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Relevant word?"
         android:id="@+id/currentGameWord"
-        android:layout_gravity="center_horizontal|bottom" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Word 1/10"
-        android:layout_margin="6dp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:text="Relevant word?"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
         android:id="@+id/wordProgress"
-        android:layout_gravity="left|bottom" />
-
-    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Finish"
-        android:id="@+id/finishBtn"
-        android:layout_gravity="right|bottom" />
+        android:layout_gravity="left|bottom"
+        android:layout_margin="6dp"
+        android:text="Word 1/10"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Irrelevant"
-        android:textColor="@android:color/white"
+        android:layout_gravity="left|center_vertical"
         android:layout_marginLeft="10dp"
-        android:layout_gravity="left|center_vertical" />
+        android:text="Irrelevant"
+        android:textColor="@android:color/white" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Relevant"
-        android:textColor="@android:color/white"
+        android:layout_gravity="right|center_vertical"
         android:layout_marginRight="10dp"
-        android:layout_gravity="right|center_vertical" />
+        android:text="Relevant"
+        android:textColor="@android:color/white" />
 
 
 </FrameLayout>

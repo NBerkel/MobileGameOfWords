@@ -137,6 +137,7 @@ public class GeoFenceTransitionIntentService extends IntentService {
     public void sendNotification(String notificationDetails) {
         // Create an explicit content Intent that starts the main Activity.
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+        notificationIntent.putExtra("ID_KEY", "geoNotification");
 
         // Construct a task stack.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
@@ -161,9 +162,9 @@ public class GeoFenceTransitionIntentService extends IntentService {
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(),
                         R.mipmap.ic_launcher))
                 .setColor(Color.RED)
-                .setVibrate(new long[]{0, 1000, 1000, 1000, 1000})
+                .setVibrate(new long[]{0, 1400})
                 .setContentTitle(notificationDetails)
-                .setContentText(getString(R.string.geofence_transition_notification_text))
+                .setContentText(getString(R.string.notification_text))
                 .setContentIntent(notificationPendingIntent);
 
         // Dismiss notification once the user touches it.
