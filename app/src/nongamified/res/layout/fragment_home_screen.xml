@@ -1,59 +1,103 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context="com.niels.mobilegameofwords.HomeScreen">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.niels.mobilegameofwords.HomeScreen">
 
-    <ScrollView android:id="@+id/scrollView" android:layout_width="match_parent"
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <LinearLayout android:id="@+id/intro_text" android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:orientation="vertical"
+        <LinearLayout
+            android:id="@+id/intro_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:paddingBottom="@dimen/activity_vertical_margin"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin">
 
-            <ImageView android:layout_width="246dp" android:layout_height="126dp"
-                android:layout_gravity="center_horizontal" android:layout_marginBottom="34dp"
-                android:adjustViewBounds="true" android:src="@drawable/gow_logo" />
+            <ImageView
+                android:layout_width="246dp"
+                android:layout_height="126dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="34dp"
+                android:adjustViewBounds="true"
+                android:src="@drawable/gow_logo" />
 
-            <TextView android:id="@+id/welcomeTextView" android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:layout_marginBottom="20dp"
-                android:gravity="center" android:text="@string/welcome" android:textSize="20sp" />
+            <TextView
+                android:id="@+id/welcomeTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:gravity="center"
+                android:text="@string/welcome"
+                android:textSize="20sp" />
 
-            <LinearLayout android:id="@+id/linearLayoutUsernameInput"
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp" android:gravity="center"
+            <LinearLayout
+                android:id="@+id/linearLayoutUsernameInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:gravity="center"
                 android:orientation="vertical">
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/chooseNickname" android:textSize="18sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/chooseNickname"
+                    android:textSize="18sp" />
 
-                <EditText android:id="@+id/usernameEditText" android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:editable="true"
-                    android:hint="nickname" android:inputType="text|textCapWords|textPersonName"
-                    android:singleLine="true" android:textSize="18sp" />
+                <EditText
+                    android:id="@+id/usernameEditText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:editable="true"
+                    android:hint="nickname"
+                    android:inputType="text|textCapWords|textPersonName"
+                    android:singleLine="true"
+                    android:textSize="18sp" />
             </LinearLayout>
 
-            <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
-                android:orientation="horizontal" android:visibility="gone">
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone">
 
-                <LinearLayout android:id="@+id/leaderboardUsersLayout" android:layout_width="0dp"
-                    android:layout_height="wrap_content" android:layout_marginRight="6dp"
-                    android:layout_weight="1" android:gravity="right"
+                <LinearLayout
+                    android:id="@+id/leaderboardUsersLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="6dp"
+                    android:layout_weight="1"
+                    android:gravity="right"
                     android:orientation="vertical" />
 
-                <LinearLayout android:id="@+id/leaderboardScoresLayout" android:layout_width="0dp"
-                    android:layout_height="wrap_content" android:layout_marginLeft="6dp"
-                    android:layout_weight="1" android:orientation="vertical" />
+                <LinearLayout
+                    android:id="@+id/leaderboardScoresLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical" />
             </LinearLayout>
 
-            <Button android:id="@+id/playGameBtn" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:layout_gravity="center"
-                android:layout_marginTop="18dp" android:text="Start!" />
+            <Button
+                android:id="@+id/playGameBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="18dp"
+                android:text="Start!" />
         </LinearLayout>
     </ScrollView>
 
-    <FrameLayout android:id="@+id/container_body" android:layout_width="match_parent"
+    <FrameLayout
+        android:id="@+id/container_body"
+        android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
 </FrameLayout>

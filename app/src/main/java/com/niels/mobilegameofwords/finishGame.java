@@ -82,6 +82,7 @@ public class finishGame extends Fragment {
                 Log.d("Niels", "backtomain launch");
 
                 Fragment fragment = new HomeScreen();
+                HomeScreen.userAlreadyExists = true;
 
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

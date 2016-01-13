@@ -36,13 +36,13 @@ import java.util.Map;
 public class HomeScreen extends Fragment {
     public static boolean enablePlayBtn;
     public static String nickname;
-    static Boolean userAlreadyExists = false;
+    public static Boolean userAlreadyExists = false;
     View view;
     TextView welcomeTextView;
     Button playGameBtn;
     EditText usernameEditText;
     String fileName = "nickname";
-    com.niels.mobilegameofwords.dbGetLeaderboard dbGetLeaderboard;
+    DBGetLeaderBoard dbGetLeaderboard;
 
     public HomeScreen() {
         // Required empty public constructor
@@ -62,7 +62,7 @@ public class HomeScreen extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home_screen, container, false);
 
-        dbGetLeaderboard = new dbGetLeaderboard(getActivity());
+        dbGetLeaderboard = new DBGetLeaderBoard(getActivity());
         dbGetLeaderboard.getLeaderboard(getContext());
 
         welcomeTextView = (TextView) view.findViewById(R.id.welcomeTextView);
@@ -95,7 +95,10 @@ public class HomeScreen extends Fragment {
                         FileOutputStream outputStream;
                         try {
                             // Create file with nickname
-                            outputStream = getContext().getApplicationContext().openFileOutput(fileName, Context.MODE_PRIVATE);
+                            Log.d("Niels", String.valueOf(getContext().getApplicationContext()));
+                            Log.d("Niels", String.valueOf(getActivity().getApplicationContext()));
+                            //outputStream = getContext().openFileOutput(fileName, Context.MODE_PRIVATE);
+                            outputStream = getActivity().getApplicationContext().openFileOutput(fileName, Context.MODE_PRIVATE);
                             outputStream.write(content.getBytes());
                             outputStream.close();
                             // Store nickname in DB

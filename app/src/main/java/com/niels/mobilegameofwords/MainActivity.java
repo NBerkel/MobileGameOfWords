@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity
         checkUsername();
 
         Fragment fragment = new HomeScreen();
+        Log.d("NielsMain", "New HomeScreen created");
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -129,18 +130,10 @@ public class MainActivity extends AppCompatActivity
 
         Intent notificationIntent = new Intent(this, NotificationService.class);
         startService(notificationIntent);
-
-        /*Intent intent = new Intent(this, MainActivity.class);
-        String id = "AlarmNotification";
-        intent.putExtra("ID_KEY", id);
-        PendingIntent sender = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);*/
-
-        //AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        //am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, Constants.NOTIFICATION_TIMEOUT, Constants.NOTIFICATION_TIMEOUT, sender);
     }
 
 
-    private void checkUsername() {
+    public void checkUsername() {
         //check if username already exist, else offer possibility to enter new username
         if (fileExistance(fileName) == true) {
             Log.d("Niels", "File exist, lets read it!");
@@ -168,7 +161,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     public boolean fileExistance(String fname) {
-        File file = getBaseContext().getFileStreamPath(fname);
+        //File file = getBaseContext().getFileStreamPath(fname);
+        File file = null;
+        file = this.getApplicationContext().getFileStreamPath(fname);
         return file.exists();
     }
 

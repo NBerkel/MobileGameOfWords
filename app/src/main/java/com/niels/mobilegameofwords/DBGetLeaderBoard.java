@@ -24,13 +24,13 @@ import java.util.Collections;
 /**
  * Created by niels on 27/11/15.
  */
-public class dbGetLeaderboard {
+public class DBGetLeaderBoard {
 
     public Activity activity;
     ArrayList nicknames = new ArrayList();
     ArrayList<highScoreEntry> leaderBoard;
 
-    public dbGetLeaderboard(Activity _activity) {
+    public DBGetLeaderBoard(Activity _activity) {
         this.activity = _activity;
     }
 
@@ -82,7 +82,6 @@ public class dbGetLeaderboard {
         try {
             JSONArray strJson = new JSONArray(response);
             for (int i = 0; i < 5; i++) {
-
                 JSONObject object = strJson.getJSONObject(i);
 
                 highScoreEntry newEntry = new highScoreEntry();
