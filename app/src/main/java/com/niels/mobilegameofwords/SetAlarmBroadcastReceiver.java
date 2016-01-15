@@ -16,7 +16,7 @@ import java.util.Calendar;
 
 public class SetAlarmBroadcastReceiver extends BroadcastReceiver {
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
         Log.d("Niels", "SetAlarmBroadcastReceiver");
 
         // Create an explicit content Intent that starts the main Activity.
@@ -49,7 +49,8 @@ public class SetAlarmBroadcastReceiver extends BroadcastReceiver {
                 .setVibrate(new long[]{0, 1400})
                 .setContentTitle("Play Game of Words?")
                 .setContentText(context.getString(R.string.notification_text))
-                .setContentIntent(notificationPendingIntent);
+                .setContentIntent(notificationPendingIntent)
+                .setDeleteIntent(getDeleteIntent(context));
 
         // Dismiss notification once the user touches it.
         builder.setAutoCancel(true);
@@ -60,6 +61,7 @@ public class SetAlarmBroadcastReceiver extends BroadcastReceiver {
         // Issue the notification - only if application is not open and time is not within restricted area (between 22:00 & 08:00)
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         if (MainActivity.isActivityRunning != true && hour <= 21 && hour >= 8 ) {
+            AlertInfo.UpdateAlert(context, "notified_time");
             mNotificationManager.notify(0, builder.build());
         }
 
@@ -68,9 +70,19 @@ public class SetAlarmBroadcastReceiver extends BroadcastReceiver {
         long delayInMilliseconds = Constants.NOTIFICATION_DISMISS_TIME;
         h.postDelayed(new Runnable() {
             public void run() {
+                //TODO only call updateAlert if a notification has actually been dismissed..
+                //if (mNotificationManager.getActiveNotifications().length > 0) {
+                AlertInfo.UpdateAlert(context, "dismissed_time");
+                //}
                 mNotificationManager.cancel(0);
-                Log.d("Niels", "Notification cancelled");
+
             }
         }, delayInMilliseconds);
+    }
+
+    private PendingIntent getDeleteIntent(Context context) {
+        Intent intent = new Intent(context, NotificationBroadcastReceiver.class);
+        intent.setAction("user_dismissed_time");
+        return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 }

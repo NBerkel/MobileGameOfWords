@@ -2,10 +2,13 @@ package com.niels.mobilegameofwords;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -152,10 +155,27 @@ public class HomeScreen extends Fragment {
         String url = MainActivity.getIP() + "addnewnickname.php";
 
         int gamified = GameplayStats.getGamified();
+        String android_os = Build.VERSION.RELEASE + " " + Build.VERSION.SDK_INT;
+        String device_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        String phone = Build.MANUFACTURER + " " + Build.MODEL;
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        this.getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int widthPixels = metrics.widthPixels;
+        int heightPixels = metrics.heightPixels;
+        String screenSize = widthPixels + "-" + heightPixels;
+
+        Long tsLong = System.currentTimeMillis() / 1000;
+        String timestamp = tsLong.toString();
 
         final JSONObject nicknameObj = new JSONObject();
         nicknameObj.put("nickname", nickname);
         nicknameObj.put("gamified", gamified);
+        nicknameObj.put("android_os", android_os);
+        nicknameObj.put("device_id", device_id);
+        nicknameObj.put("phone", phone);
+        nicknameObj.put("screen_size", screenSize);
+        nicknameObj.put("timestamp", timestamp);
 
         StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override

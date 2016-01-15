@@ -15,6 +15,7 @@ public class Constants {
     public static final int GEOFENCES_LOITERING_DELAY = 3000; // 3 seconds.
     public static final float GEOFENCE_RADIUS_IN_METERS = 70;
     public static final int NOTIFICATION_TIMEOUT = 7200000; // 120 minutes.
+    //public static final int NOTIFICATION_TIMEOUT = 18000; // 3 minutes.
     public static final int NOTIFICATION_DISMISS_TIME = 900000; // 15 minutes.
 
     /**

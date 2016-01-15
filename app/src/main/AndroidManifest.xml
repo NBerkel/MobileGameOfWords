@@ -34,6 +34,12 @@
         </receiver>
         <receiver android:name=".SetAlarmBroadcastReceiver" />
 
+        <receiver android:name=".NotificationBroadcastReceiver">
+            <intent-filter>
+                <action android:name="notification_cancelled" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".app.SecondActivity"
             android:label="@string/title_activity_second" />

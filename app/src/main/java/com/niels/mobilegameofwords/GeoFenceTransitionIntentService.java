@@ -79,6 +79,7 @@ public class GeoFenceTransitionIntentService extends IntentService {
             // Send notification and log the transition details (only if application is not in foreground)
             if (MainActivity.isActivityRunning != true) {
                 sendNotification("Entered " + geofencingEvent.getTriggeringGeofences().get(0).getRequestId());
+                AlertInfo.UpdateAlert(getApplicationContext(), "notified_gps");
                 Log.d("Niels", geofenceTransitionDetails);
             }
             // Set zone
@@ -100,9 +101,9 @@ public class GeoFenceTransitionIntentService extends IntentService {
         // Get an instance of the Notification manager
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        // Issue the notification
+        // Dismiss the notification
         mNotificationManager.cancel(0);
+        AlertInfo.UpdateAlert(getApplicationContext(), "dismissed_gps");
     }
 
     /**
@@ -165,7 +166,8 @@ public class GeoFenceTransitionIntentService extends IntentService {
                 .setVibrate(new long[]{0, 1400})
                 .setContentTitle(notificationDetails)
                 .setContentText(getString(R.string.notification_text))
-                .setContentIntent(notificationPendingIntent);
+                .setContentIntent(notificationPendingIntent)
+                .setDeleteIntent(getDeleteIntent());
 
         // Dismiss notification once the user touches it.
         builder.setAutoCancel(true);
@@ -182,9 +184,18 @@ public class GeoFenceTransitionIntentService extends IntentService {
         h.postDelayed(new Runnable() {
             public void run() {
                 mNotificationManager.cancel(0);
+                //TODO only call updateAlert if a notification has actually been dismissed..
+                AlertInfo.UpdateAlert(getApplicationContext(), "dismissed_time_gps");
                 Log.d("Niels", "Notification cancelled");
             }
         }, delayInMilliseconds);
+    }
+
+    private PendingIntent getDeleteIntent() {
+        Context context = getApplicationContext();
+        Intent intent = new Intent(context, NotificationBroadcastReceiver.class);
+        intent.setAction("user_dismissed_gps");
+        return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
     /**

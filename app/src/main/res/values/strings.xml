@@ -28,9 +28,10 @@
     <string name="highscoresTitle">Highscores</string>
     <string name="inputRelevantWordInstructions">Before you begin, please enter a word that you believe characterises well the space you are currently in:</string>
     <string name="sliderInstructions">Please adjust the slider values so that they best describe the space you are currently in.</string>
-    <string name="finishedScore">Game finished - your final score is</string>
+    <string name="finishedScore">Game finished - your final score is:</string>
+    <string name="finishedNoScore">Game finished.</string>
     <string name="calculatingScore">Calculating score ...</string>
     <string name="playAgain">Play again!</string>
+    <string name="loadingCurrentWord"></string>
     <string name="title_activity_second">SecondActivity</string>
-
 </resources>
