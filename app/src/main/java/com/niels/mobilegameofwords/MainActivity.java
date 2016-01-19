@@ -1,10 +1,8 @@
 package com.niels.mobilegameofwords;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -94,6 +92,7 @@ public class MainActivity extends AppCompatActivity
             return;
         }
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, ll);
+        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, ll);
 
         gameplayStats = new GameplayStats(getApplicationContext());
         gameplayStats.setEntry(1);
@@ -276,17 +275,6 @@ public class MainActivity extends AppCompatActivity
         if (getIntent() != null && getIntent().getExtras() != null) { //Launched from Notification
             if (getIntent().getExtras().containsKey("ID_KEY")) {
                 GameplayStats gameplayStats = new GameplayStats(getApplicationContext());
-
-                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-                alertDialog.setTitle("Alert");
-                alertDialog.setMessage(getIntent().getStringExtra("ID_KEY"));
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialog.show();
 
                 //if (getIntent().getStringExtra("ID_KEY") == "geoNotification") {
                 if (getIntent().getStringExtra("ID_KEY").contains("geoNotification")) {

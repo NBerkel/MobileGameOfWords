@@ -70,10 +70,7 @@ public class SetAlarmBroadcastReceiver extends BroadcastReceiver {
         long delayInMilliseconds = Constants.NOTIFICATION_DISMISS_TIME;
         h.postDelayed(new Runnable() {
             public void run() {
-                //TODO only call updateAlert if a notification has actually been dismissed..
-                //if (mNotificationManager.getActiveNotifications().length > 0) {
                 AlertInfo.UpdateAlert(context, "dismissed_time");
-                //}
                 mNotificationManager.cancel(0);
 
             }

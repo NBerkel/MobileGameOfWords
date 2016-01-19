@@ -138,12 +138,23 @@ public class gameplay extends Fragment {
 
         //TODO randomly determine position of irrelevant / relevant button?
 
-        getGameWords();
+        try {
+            getGameWords();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         return view;
     }
 
-    private void getGameWords() {
+    private void getGameWords() throws JSONException {
+        String nickname = HomeScreen.getNickname();
+        String gps_zone = GameplayStats.getGPSZone();
+
+        final JSONObject dataJSON = new JSONObject();
+        dataJSON.put("nickname", nickname);
+        dataJSON.put("gps_zone", gps_zone);
+
         RequestQueue queue = Volley.newRequestQueue(getContext());
         String url = MainActivity.getIP() + "getwords.php";
 
@@ -184,15 +195,33 @@ public class gameplay extends Fragment {
     }
 
     private void irrelevantBtnPressed() {
-        answerProvided = true;
-        wordsUserRating.add("irrelevant");
-        anim.scaleView(leftCircleImageView, 1f, 1.2f, 400);
+        if (words.size() != 0) {
+            SendLog sendLog = new SendLog();
+            try {
+                sendLog.UpdateLogDB(words.get(currentWord), false, getContext());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            answerProvided = true;
+            wordsUserRating.add("irrelevant");
+            anim.scaleView(leftCircleImageView, 1f, 1.2f, 400);
+        }
     }
 
     private void relevantBtnPressed() {
-        answerProvided = true;
-        wordsUserRating.add("relevant");
-        anim.scaleView(rightCircleImageView, 1f, 1.2f, 400);
+        if (words.size() != 0) {
+            SendLog sendLog = new SendLog();
+            try {
+                sendLog.UpdateLogDB(words.get(currentWord), true, getContext());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            answerProvided = true;
+            wordsUserRating.add("relevant");
+            anim.scaleView(rightCircleImageView, 1f, 1.2f, 400);
+        }
     }
 
     private void startGame() {
@@ -363,7 +392,7 @@ public class gameplay extends Fragment {
                             Animation.RELATIVE_TO_SELF, 0.5f); // Pivot point of Y scaling
                     reverseAnim.setFillAfter(true); // Needed to keep the result of the animation
                     reverseAnim.setInterpolator(new DecelerateInterpolator());
-                    reverseAnim.setDuration(speed / 2);
+                    reverseAnim.setDuration(0);
                     v.startAnimation(reverseAnim);
 
                     // Stop current word animation and go to next word.

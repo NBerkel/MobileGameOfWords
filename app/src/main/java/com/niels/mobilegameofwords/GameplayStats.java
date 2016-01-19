@@ -150,6 +150,7 @@ public class GameplayStats {
             return;
         }
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, ll);
+        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, ll);
     }
 
     public void stopGPSSensor(LocationManager lm, LocationListener ll) {

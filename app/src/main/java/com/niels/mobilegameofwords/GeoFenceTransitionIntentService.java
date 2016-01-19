@@ -184,7 +184,6 @@ public class GeoFenceTransitionIntentService extends IntentService {
         h.postDelayed(new Runnable() {
             public void run() {
                 mNotificationManager.cancel(0);
-                //TODO only call updateAlert if a notification has actually been dismissed..
                 AlertInfo.UpdateAlert(getApplicationContext(), "dismissed_time_gps");
                 Log.d("Niels", "Notification cancelled");
             }

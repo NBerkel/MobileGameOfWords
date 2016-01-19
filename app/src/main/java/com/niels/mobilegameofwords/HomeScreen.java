@@ -220,6 +220,12 @@ public class HomeScreen extends Fragment {
     }
 
     private void startGame() {
+        /*
+        Location recordedLocation = GameplayStats.getGPSLocation();
+        if (recordedLocation == null) {
+            Log.d("Niels", "location is null");
+        }
+        */
         GameplayStats.setStartTime();
 
         LinearLayout intro_text = (LinearLayout) view.findViewById(R.id.intro_text);

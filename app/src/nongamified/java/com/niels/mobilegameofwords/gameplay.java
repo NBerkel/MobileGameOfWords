@@ -21,6 +21,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.games.Game;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -114,12 +115,23 @@ public class gameplay extends Fragment {
 
         //TODO randomly determine position of irrelevant / relevant button?
 
-        getGameWords();
+        try {
+            getGameWords();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         return view;
     }
 
-    private void getGameWords() {
+    private void getGameWords() throws JSONException {
+        String nickname = HomeScreen.getNickname();
+        String gps_zone = GameplayStats.getGPSZone();
+
+        final JSONObject dataJSON = new JSONObject();
+        dataJSON.put("nickname", nickname);
+        dataJSON.put("gps_zone", gps_zone);
+
         RequestQueue queue = Volley.newRequestQueue(getContext());
         String url = MainActivity.getIP() + "getwords.php";
 
@@ -160,17 +172,33 @@ public class gameplay extends Fragment {
     }
 
     private void irrelevantBtnPressed() {
-        answerProvided = true;
-        wordsUserRating.add("irrelevant");
-        currentWord++;
-        nextWord();
+        if (words.size() != 0) {
+            SendLog sendLog = new SendLog();
+            try {
+                sendLog.UpdateLogDB(words.get(currentWord), false, getContext());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            answerProvided = true;
+            wordsUserRating.add("irrelevant");
+            currentWord++;
+            nextWord();
+        }
     }
 
     private void relevantBtnPressed() {
-        answerProvided = true;
-        wordsUserRating.add("relevant");
-        currentWord++;
-        nextWord();
+        if (words.size() != 0) {
+            SendLog sendLog = new SendLog();
+            try {
+                sendLog.UpdateLogDB(words.get(currentWord), true, getContext());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            answerProvided = true;
+            wordsUserRating.add("relevant");
+            currentWord++;
+            nextWord();
+        }
     }
 
     private void startGame() {
