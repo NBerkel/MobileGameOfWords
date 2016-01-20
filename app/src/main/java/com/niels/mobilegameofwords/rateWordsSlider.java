@@ -1,6 +1,7 @@
 package com.niels.mobilegameofwords;
 
 import android.content.Context;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,7 +19,6 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -31,7 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -128,7 +128,7 @@ public class rateWordsSlider extends Fragment {
         JSONArray sliderAnswers = new JSONArray();
         JSONArray sliderWords = MainActivity.sliderWords;
         int j = 0;
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i <= sliderLayoutHolder.getChildCount(); i++) {
             View v = sliderLayoutHolder.getChildAt(i);
             if (v instanceof SeekBar) {
                 JSONArray sliderAnswer = new JSONArray();
@@ -137,13 +137,31 @@ public class rateWordsSlider extends Fragment {
 
                 int value = ((SeekBar) v).getProgress();
 
-                sliderAnswer.put(String.valueOf(question_id));
-                sliderAnswer.put(String.valueOf(490));
+                String gps_zone = GameplayStats.getGPSZone();
+                int gps_id;
+                if (gps_zone == "Downtown") {
+                    gps_id = 1;
+                } else if (gps_zone == "Railway station") {
+                    gps_id = 2;
+                } else if (gps_zone == "Park") {
+                    gps_id = 3;
+                } else if (gps_zone == "Kiikeli") {
+                    gps_id = 4;
+                } else if (gps_zone == "Market square") {
+                    gps_id = 5;
+                } else if (gps_zone == "Library") {
+                    gps_id = 6;
+                } else if (gps_zone == "University office") {
+                    gps_id = 6;
+                } else {
+                    gps_id = 7; // "Other"
+                }
+
+                sliderAnswer.put(1); // Question
+                sliderAnswer.put(gps_id); // Option: location from 1 to 6
                 sliderAnswer.put(sliderWords.getJSONObject(j).getString("criterion_id"));
-                sliderAnswer.put(String.valueOf(value));
-
+                sliderAnswer.put(value); // Rating
                 sliderAnswers.put(sliderAnswer);
-
                 j++;
             } else {
             }
@@ -156,7 +174,8 @@ public class rateWordsSlider extends Fragment {
     private void sendVolley(final String sliderAnswersString) {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url = "http://dss.simohosio.com/api/postrating.php";
+        // String url = "http://gow2.simohosio.com/api/postrating.php";
+        String url = MainActivity.getIP() + "/api/postrating.php";
         //String url = "http://requestb.in/upk1t8up";
 
         StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -173,21 +192,11 @@ public class rateWordsSlider extends Fragment {
         }) {
             @Override
             protected Map<String, String> getParams() {
-                // TODO LinkedHashMap ?
-//                LinkedHashMap<String, String> params = new LinkedHashMap<String, String>();
-//                params.put("json_ratings", sliderAnswersString);
-//                params.put("user_id", "some_id");
-//                params.put("meta", "META info");
-//                return params;
-                HashMap<String, String> params = new HashMap<>();
-                return params;
-            }
-
-            /** Passing some request headers * */
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String,String> params = new HashMap<String, String>();
-                params.put("Content-Type","application/x-www-form-urlencoded");
+                Map<String, String> params = new LinkedHashMap<>();
+                params.put("json_ratings", sliderAnswersString);
+                params.put("user_id", HomeScreen.getNickname());
+                Location GPS_Location = GameplayStats.getGPSLocation();
+                params.put("meta", GPS_Location.toString());
                 return params;
             }
         };
@@ -197,7 +206,6 @@ public class rateWordsSlider extends Fragment {
     }
 
     private void startGame() {
-        //TODO: replace with inputLocRelevantWord()
         Fragment fragment = new gameplay();
 
         FragmentManager fragmentManager = getFragmentManager();

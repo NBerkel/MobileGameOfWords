@@ -31,6 +31,7 @@ public class Constants {
         OULU_LANDMARKS.put("Park", new LatLng(65.017738, 25.475968));
         OULU_LANDMARKS.put("Kiikeli", new LatLng(65.013272, 25.459445));
         OULU_LANDMARKS.put("Market square", new LatLng(65.013637, 25.464436));
+        OULU_LANDMARKS.put("Library", new LatLng(65.015293, 25.462651));
     }
 
     private Constants() {

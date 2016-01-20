@@ -169,7 +169,8 @@ public class MainActivity extends AppCompatActivity
     private void getCriteria() {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://dss.simohosio.com/api/getcriteria.php?question_id=8";
+        //String url = "http://gow2.simohosio.com/api/getcriteria.php?question_id=1";
+        String url = MainActivity.getIP() + "api/getcriteria.php?question_id=1";
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
