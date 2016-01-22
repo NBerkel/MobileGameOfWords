@@ -1,31 +1,19 @@
-package com.niels.mobilegameofwords;
+package com.niels.geooulu;
 
-import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
@@ -33,182 +21,45 @@ import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity
-        implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
+/**
+ * Created by niels on 08/12/15.
+ */
+public class GeoFences extends AppCompatActivity
+        implements ConnectionCallbacks, OnConnectionFailedListener, ResultCallback<Status>  {
 
     protected static final String TAG = "MainActivity";
-    public static JSONArray sliderWords = new JSONArray();
-    public static boolean isActivityRunning;
-    static String ip = "http://gow.ddns.net/";
-    public GameplayStats gameplayStats;
+
+    /**
+     * Provides the entry point to Google Play services.
+     */
     protected GoogleApiClient mGoogleApiClient;
+
+    /**
+     * The list of geofences used in this sample.
+     */
     protected ArrayList<Geofence> mGeofenceList;
 
-    String fileName = "nickname";
-    //private static GameplayStats.GeoUpdateHandler geoUpdateHandler;
-    LocationListener ll;
-    LocationManager lm;
     /**
      * Used to keep track of whether geofences were added.
      */
     private boolean mGeofencesAdded;
+
     /**
      * Used when requesting to add or remove geofences.
      */
     private PendingIntent mGeofencePendingIntent;
+
     /**
      * Used to persist application state about whether geofences were added.
      */
     private SharedPreferences mSharedPreferences;
 
-    public static String getIP() {
-        return ip;
-    }
-
-    public static JSONArray getsliderWords() {
-        return sliderWords;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        //geoUpdateHandler = new GameplayStats.GeoUpdateHandler();
-        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        ll = new GameplayStats.GeoUpdateHandler();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, ll);
-        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, ll);
-
-        gameplayStats = new GameplayStats(getApplicationContext());
-        gameplayStats.setEntry(1);
-
-        if (BuildConfig.FLAVOR.equals("gamified")) {
-            gameplayStats.setGamified(1);
-        } else if (BuildConfig.FLAVOR.equals("nongamified")) {
-            gameplayStats.setGamified(0);
-        }
-
-        setContentView(R.layout.activity_main);
-
-        checkUsername();
-
-        Fragment fragment = new HomeScreen();
-        Log.d("NielsMain", "New HomeScreen created");
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.container_body, fragment);
-        //fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-
-        //gameplayStats = new GameplayStats(this);
-        // Initialise with "other" zone
-        gameplayStats.setGPSZone("Other");
-        gameplayStats.startGPSSensor(lm, ll);
-
-        addGeofenceList(this);
-
-        getCriteria();
-    }
-
-    private void startAlarm() {
-        Log.d("Alarm scheduler", "Alarm is being scheduled");
-
-        Intent notificationIntent = new Intent(this, NotificationService.class);
-        startService(notificationIntent);
-    }
-
-    public void checkUsername() {
-        //check if username already exist, else offer possibility to enter new username
-        if (fileExistance(fileName) == true) {
-            Log.d("Niels", "File exist, lets read it!");
-            HomeScreen.userAlreadyExists = true;
-            BufferedReader input;
-            File file;
-            try {
-                file = new File(getFilesDir(), fileName);
-
-                input = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-                String line;
-                StringBuffer buffer = new StringBuffer();
-                while ((line = input.readLine()) != null) {
-                    buffer.append(line);
-                }
-                Log.d("Niels", "File content " + buffer.toString());
-
-                HomeScreen.nickname = buffer.toString();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            HomeScreen.userAlreadyExists = false;
-        }
-    }
-
-    public boolean fileExistance(String fname) {
-        File file = null;
-        file = this.getApplicationContext().getFileStreamPath(fname);
-        return file.exists();
-    }
-
-    private void getCriteria() {
-        // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(this);
-        //String url = "http://gow2.simohosio.com/api/getcriteria.php?question_id=1";
-        String url = MainActivity.getIP() + "api/getcriteria.php?question_id=1";
-
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        getJSONInfo(response);
-                        HomeScreen.enablePlayBtn = true;
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                HomeScreen.enablePlayBtn = false;
-                Log.d("GameOfWords", String.valueOf(error));
-            }
-        });
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
-    }
-
-    private void getJSONInfo(String currentLocation) {
-        try {
-            JSONArray strJson = new JSONArray(currentLocation);
-            for (int i = 0; i < strJson.length(); i++) {
-                JSONObject object = strJson.getJSONObject(i);
-
-                JSONObject word = new JSONObject();
-                word.put("criterion_id", object.getString("criterion_id"));
-                word.put("criterion_body", object.getString("criterion_body"));
-                sliderWords.put(word);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            //TODO block person from starting game?
-        }
-    }
 
     public void addGeofenceList(Context context) {
+
         // Empty list for storing geofences.
         mGeofenceList = new ArrayList<Geofence>();
 
@@ -229,11 +80,10 @@ public class MainActivity extends AppCompatActivity
         buildGoogleApiClient(context);
     }
 
-    /**
-     * Builds a GoogleApiClient. Uses the {@code #addApi} method to request the LocationServices API.
-     *
-     * @param context
-     */
+        /**
+         * Builds a GoogleApiClient. Uses the {@code #addApi} method to request the LocationServices API.
+         * @param context
+         */
     protected synchronized void buildGoogleApiClient(Context context) {
         mGoogleApiClient = new GoogleApiClient.Builder(context)
                 .addConnectionCallbacks(this)
@@ -253,52 +103,6 @@ public class MainActivity extends AppCompatActivity
     protected void onStop() {
         super.onStop();
         mGoogleApiClient.disconnect();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        // Start ESM notification
-        startAlarm();
-        // Stop GPS collection
-        gameplayStats.stopGPSSensor(lm, ll);
-
-        isActivityRunning = false;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        gameplayStats.startGPSSensor(lm, ll);
-
-        if (getIntent() != null && getIntent().getExtras() != null) { //Launched from Notification
-            if (getIntent().getExtras().containsKey("ID_KEY")) {
-                GameplayStats gameplayStats = new GameplayStats(getApplicationContext());
-
-                //if (getIntent().getStringExtra("ID_KEY") == "geoNotification") {
-                if (getIntent().getStringExtra("ID_KEY").contains("geoNotification")) {
-                    gameplayStats.setEntry(3);
-                    //launched from geo notification
-                    AlertInfo.UpdateAlert(getApplicationContext(), "user_opened_gps");
-                    Log.d("Niels", "geo notification launch");
-                } else {
-                    gameplayStats.setEntry(2);
-                    //launched from time notification
-                    AlertInfo.UpdateAlert(getApplicationContext(), "user_opened_time");
-                    Log.d("Niels", "time notification launch");
-                }
-                getIntent().removeExtra("ID_KEY");
-            }
-        } else {
-            //launched from launcher
-            Log.d("Niels", "application launch");
-            GameplayStats gameplayStats = new GameplayStats(getApplicationContext());
-            gameplayStats.setEntry(1);
-        }
-
-        isActivityRunning = true;
     }
 
     /**
@@ -332,6 +136,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onConnectionFailed(ConnectionResult result) {
+        // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
+        // onConnectionFailed.
         Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
     }
 
@@ -339,9 +145,9 @@ public class MainActivity extends AppCompatActivity
     public void onConnectionSuspended(int cause) {
         // The connection to Google Play services was lost for some reason.
         Log.i(TAG, "Connection suspended");
+
         // onConnected() will be called again automatically when the service reconnects
     }
-
     /**
      * Builds and returns a GeofencingRequest. Specifies the list of geofences to be monitored.
      * Also specifies how the geofence notifications are initially triggered.
@@ -368,7 +174,7 @@ public class MainActivity extends AppCompatActivity
     /**
      * Runs when the result of calling addGeofences() and removeGeofences() becomes available.
      * Either method can complete successfully or with an error.
-     * <p/>
+     *
      * Since this activity implements the {@link ResultCallback} interface, we are required to
      * define this method.
      *
@@ -424,7 +230,7 @@ public class MainActivity extends AppCompatActivity
                             // Set the expiration duration of the geofence. This geofence gets automatically removed after this period of time.
                     .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_HOURS)
                             // Set the transition types of interest
-                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL)
                             //.setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
                             // Create the geofence.
                     .build());

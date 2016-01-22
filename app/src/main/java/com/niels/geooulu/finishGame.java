@@ -1,4 +1,4 @@
-package com.niels.mobilegameofwords;
+package com.niels.geooulu;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

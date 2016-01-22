@@ -1,4 +1,4 @@
-package com.niels.mobilegameofwords;
+package com.niels.geooulu;
 
 import android.content.Context;
 import android.net.Uri;
@@ -168,7 +168,7 @@ public class gameplay extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("GameOfWords", String.valueOf(error));
+                Log.d("GeoOulu", String.valueOf(error));
             }
         });
         // Add the request to the RequestQueue.
@@ -284,13 +284,13 @@ public class gameplay extends Fragment {
         StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d("GameOfWords", response.toString());
+                Log.d("GeoOulu", response.toString());
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("GameOfWords", "Error: " + error.getMessage());
-                Log.d("GameOfWords", "" + error.getMessage() + "," + error.toString());
+                VolleyLog.d("GeoOulu", "Error: " + error.getMessage());
+                Log.d("GeoOulu", "" + error.getMessage() + "," + error.toString());
             }
         }) {
             @Override

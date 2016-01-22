@@ -1,4 +1,4 @@
-package com.niels.mobilegameofwords;
+package com.niels.geooulu;
 
 import android.app.AlarmManager;
 import android.app.IntentService;

@@ -1,4 +1,4 @@
-package com.niels.mobilegameofwords;
+package com.niels.geooulu;
 
 import android.content.Context;
 import android.util.Log;
@@ -51,7 +51,7 @@ public class AlertInfo {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    VolleyLog.d("GameOfWords", "Error: " + error.getMessage());
+                    VolleyLog.d("GeoOulu", "Error: " + error.getMessage());
                     Log.d("NielsAlert", "" + error.getMessage() + "," + error.toString());
                 }
             }) {

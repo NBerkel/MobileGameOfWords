@@ -1,11 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion "23.0.1"
-
     defaultConfig {
-        applicationId "com.niels.mobilegameofwords"
+        applicationId "com.niels.geooulu"
         minSdkVersion 14
         targetSdkVersion 23
         versionCode 1
@@ -17,14 +20,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
     productFlavors {
         gamified {
-            applicationId "com.niels.mobilegameofwords.gamified"
+            applicationId "com.niels.geooulu.gamified"
             versionName "1.0-g"
         }
         nongamified {
-            applicationId "com.niels.mobilegameofwords.nongamified"
+            applicationId "com.niels.geooulu.nongamified"
             versionName "1.0-ng"
         }
     }

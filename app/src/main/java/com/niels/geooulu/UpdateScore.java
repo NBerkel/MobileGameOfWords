@@ -1,4 +1,4 @@
-package com.niels.mobilegameofwords;
+package com.niels.geooulu;
 
 import android.content.Context;
 import android.util.Log;
@@ -50,13 +50,13 @@ public class UpdateScore {
         StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d("GameOfWords", response.toString());
+                Log.d("GeoOulu", response.toString());
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("GameOfWords", "Error: " + error.getMessage());
-                Log.d("GameOfWords", "" + error.getMessage() + "," + error.toString());
+                VolleyLog.d("GeoOulu", "Error: " + error.getMessage());
+                Log.d("GeoOulu", "" + error.getMessage() + "," + error.toString());
             }
         }) {
             @Override

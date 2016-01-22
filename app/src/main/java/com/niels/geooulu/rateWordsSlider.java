@@ -1,4 +1,4 @@
-package com.niels.mobilegameofwords;
+package com.niels.geooulu;
 
 import android.content.Context;
 import android.location.Location;
@@ -181,13 +181,13 @@ public class rateWordsSlider extends Fragment {
         StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d("GameOfWords sliders", response.toString());
+                Log.d("GeoOulu sliders", response.toString());
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("GameOfWords", "Error: " + error.getMessage());
-                Log.d("GameOfWords sliders", "" + error.getMessage() + "," + error.toString());
+                VolleyLog.d("GeoOulu", "Error: " + error.getMessage());
+                Log.d("GeoOulu sliders", "" + error.getMessage() + "," + error.toString());
             }
         }) {
             @Override

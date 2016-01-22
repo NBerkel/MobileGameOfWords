@@ -1,4 +1,4 @@
-package com.niels.mobilegameofwords;
+package com.niels.geooulu;
 
 import android.app.Activity;
 import android.content.Context;
@@ -69,7 +69,7 @@ public class DBGetLeaderBoard {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("GameOfWords", String.valueOf(error));
+                Log.d("GeoOulu", String.valueOf(error));
             }
         });
         // Add the request to the RequestQueue.

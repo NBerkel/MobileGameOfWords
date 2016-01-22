@@ -1,9 +1,9 @@
-package com.niels.mobilegameofwords;
+package com.niels.geooulu;
 
 import android.app.Application;
 import android.util.Log;
 
-public class GameOfWords extends Application {
+public class GeoOulu extends Application {
 
     private String locRelevantWord;
 

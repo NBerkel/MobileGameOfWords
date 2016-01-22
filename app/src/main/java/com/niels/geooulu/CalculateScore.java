@@ -1,4 +1,4 @@
-package com.niels.mobilegameofwords;
+package com.niels.geooulu;
 
 
 import android.content.Context;
@@ -44,7 +44,7 @@ public class CalculateScore {
         StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d("GameOfWords", response);
+                Log.d("GeoOulu", response);
 
                 Intent setPoints = new Intent("ACTION_GAME_POINTS");
                 setPoints.putExtra("score", Integer.parseInt(response));
@@ -62,8 +62,8 @@ public class CalculateScore {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("GameOfWords", "Error: " + error.getMessage());
-                Log.d("GameOfWords", "" + error.getMessage() + "," + error.toString());
+                VolleyLog.d("GeoOulu", "Error: " + error.getMessage());
+                Log.d("GeoOulu", "" + error.getMessage() + "," + error.toString());
             }
         }) {
             @Override

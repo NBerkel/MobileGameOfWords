@@ -1,4 +1,4 @@
-package com.niels.mobilegameofwords;
+package com.niels.geooulu;
 
 import android.content.Context;
 import android.net.Uri;
@@ -64,7 +64,7 @@ public class inputLocRelevantWord extends Fragment {
             @Override
             public void onClick(View v) {
                 String locRelevantWord = locRelevantEditText.getText().toString();
-                ((GameOfWords) getActivity().getApplication()).setLocRelevantWord(locRelevantWord);
+                ((GeoOulu) getActivity().getApplication()).setLocRelevantWord(locRelevantWord);
 
                 if (locRelevantEditText.length() != 0) {
                     try {
@@ -100,13 +100,13 @@ public class inputLocRelevantWord extends Fragment {
         StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d("GameOfWords SendNewWord", response.toString());
+                Log.d("GeoOulu SendNewWord", response.toString());
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("GameOfWords", "Error: " + error.getMessage());
-                Log.d("GameOfWords SendNewWord", "" + error.getMessage() + "," + error.toString());
+                VolleyLog.d("GeoOulu", "Error: " + error.getMessage());
+                Log.d("GeoOulu SendNewWord", "" + error.getMessage() + "," + error.toString());
             }
         }) {
             @Override
