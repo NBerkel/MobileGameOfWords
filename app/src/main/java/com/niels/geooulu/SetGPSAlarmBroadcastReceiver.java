@@ -12,20 +12,19 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
-import java.util.Calendar;
+/**
+ * Created by niels on 25/01/16.
+ */
+public class SetGPSAlarmBroadcastReceiver extends BroadcastReceiver {
 
-public class SetAlarmBroadcastReceiver extends BroadcastReceiver {
-
-    static boolean alertCanceled = false;
+    public static boolean alertCanceled = false;
 
     @Override
     public void onReceive(final Context context, Intent intent) {
         alertCanceled = false;
-        Log.d("Niels", "SetAlarmBroadcastReceiver");
-
         // Create an explicit content Intent that starts the main Activity.
         Intent notificationIntent = new Intent(context, MainActivity.class);
-        notificationIntent.putExtra("ID_KEY", "notification");
+        notificationIntent.putExtra("ID_KEY", "geoNotification");
 
         // Construct a task stack.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
@@ -43,6 +42,8 @@ public class SetAlarmBroadcastReceiver extends BroadcastReceiver {
         // Get a notification builder that's compatible with platform versions >= 4
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
+        String location = intent.getStringExtra("location"); //if it's a string you stored.
+
         // Define the notification settings.
         builder.setSmallIcon(R.mipmap.ic_launcher)
                 // In a real app, you may want to use a library like Volley
@@ -51,7 +52,7 @@ public class SetAlarmBroadcastReceiver extends BroadcastReceiver {
                         R.mipmap.ic_launcher))
                 .setColor(Color.RED)
                 .setVibrate(new long[]{0, 1400})
-                .setContentTitle("Start GeoOulu?")
+                .setContentTitle(location + ".")
                 .setContentText(context.getString(R.string.notification_text))
                 .setContentIntent(notificationPendingIntent)
                 .setDeleteIntent(getDeleteIntent(context));
@@ -62,10 +63,10 @@ public class SetAlarmBroadcastReceiver extends BroadcastReceiver {
         // Get an instance of the Notification manager.
         final NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // Issue the notification - only if application is not open and time is not within restricted area (between 22:00 & 08:00)
-        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        if (MainActivity.isActivityRunning != true && hour <= 21 && hour >= 8) {
-            AlertInfo.UpdateAlert(context, "notified_time");
+        // Issue the notification
+        if (MainActivity.isActivityRunning != true) {
+            AlertInfo.UpdateAlert(context, "notified_gps");
+            Log.d("Niels", "notified gps, alert canceled " + String.valueOf(alertCanceled));
             mNotificationManager.notify(0, builder.build());
 
             // Dismiss notification after a set amount of time.
@@ -73,7 +74,8 @@ public class SetAlarmBroadcastReceiver extends BroadcastReceiver {
             long delayInMilliseconds = Constants.NOTIFICATION_DISMISS_TIME;
             h.postDelayed(new Runnable() {
                 public void run() {
-                    AlertInfo.UpdateAlert(context, "dismissed_time");
+                    Log.d("Niels", "alert canceled " + String.valueOf(alertCanceled));
+                    AlertInfo.UpdateAlert(context, "time_gps_dismissed");
                     alertCanceled = true;
                     mNotificationManager.cancelAll();
                 }
@@ -82,8 +84,10 @@ public class SetAlarmBroadcastReceiver extends BroadcastReceiver {
     }
 
     private PendingIntent getDeleteIntent(Context context) {
+        Log.d("Niels", "getDeleteIntent" + String.valueOf(alertCanceled));
+
         Intent intent = new Intent(context, NotificationBroadcastReceiver.class);
-        intent.setAction("user_dismissed_time");
+        intent.setAction("user_dismissed_gps");
         alertCanceled = true;
         return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }

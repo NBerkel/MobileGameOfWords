@@ -1,6 +1,8 @@
 package com.niels.geooulu;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -108,11 +110,19 @@ public class HomeScreen extends Fragment {
                             insertNicknameDB(content);
                             // Store nickname in variable
                             nickname = content;
+                            GameplayStats.setNickname(nickname);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        startGame();
+                        if (isNetworkAvailable() == true) {
+
+                            startGame();
+                        } else {
+                            Toast toast = Toast.makeText(getContext(), "Internet connection required.", Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
                     }
+
                 } else {
                     startGame();
                 }
@@ -121,6 +131,12 @@ public class HomeScreen extends Fragment {
 
         // Inflate the layout for this fragment
         return view;
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     private boolean checkUsernameInput() {
@@ -220,24 +236,23 @@ public class HomeScreen extends Fragment {
     }
 
     private void startGame() {
-        /*
-        Location recordedLocation = GameplayStats.getGPSLocation();
-        if (recordedLocation == null) {
-            Log.d("Niels", "location is null");
+        if (isNetworkAvailable() == true) {
+            GameplayStats.setStartTime();
+
+            LinearLayout intro_text = (LinearLayout) view.findViewById(R.id.intro_text);
+            intro_text.setVisibility(View.GONE);
+
+            Fragment fragment = new inputLocRelevantWord();
+
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.container_body, fragment);
+            //fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        } else {
+            Toast toast = Toast.makeText(getContext(), "Internet connection required.", Toast.LENGTH_SHORT);
+            toast.show();
         }
-        */
-        GameplayStats.setStartTime();
-
-        LinearLayout intro_text = (LinearLayout) view.findViewById(R.id.intro_text);
-        intro_text.setVisibility(View.GONE);
-
-        Fragment fragment = new inputLocRelevantWord();
-
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.container_body, fragment);
-        //fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
     }
 
     /**

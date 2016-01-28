@@ -1,15 +1,12 @@
 package com.niels.geooulu;
 
+import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.os.Handler;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -79,15 +76,18 @@ public class GeoFenceTransitionIntentService extends IntentService {
             // Send notification and log the transition details (only if application is not in foreground)
             if (MainActivity.isActivityRunning != true) {
                 sendNotification("Entered " + geofencingEvent.getTriggeringGeofences().get(0).getRequestId());
-                AlertInfo.UpdateAlert(getApplicationContext(), "notified_gps");
+                SetGPSAlarmBroadcastReceiver.alertCanceled = false;
                 Log.d("Niels", geofenceTransitionDetails);
             }
             // Set zone
             gameplayStats.setGPSZone(geofencingEvent.getTriggeringGeofences().get(0).getRequestId());
         } else if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
             // User has left the geofence
+            Log.d("Niels", "exit geofence");
             // dismiss notification
-            dismissNotification();
+            if (SetGPSAlarmBroadcastReceiver.alertCanceled == false) {
+                dismissNotification();
+            }
             // remove set zone
             gameplayStats.setGPSZone("Other");
         } else {
@@ -103,7 +103,12 @@ public class GeoFenceTransitionIntentService extends IntentService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // Dismiss the notification
         mNotificationManager.cancel(0);
-        AlertInfo.UpdateAlert(getApplicationContext(), "dismissed_gps");
+
+        // Only store in database if notification has not already been cancelled.
+        if (SetGPSAlarmBroadcastReceiver.alertCanceled == false) {
+            AlertInfo.UpdateAlert(getApplicationContext(), "dismissed_gps");
+        }
+        SetGPSAlarmBroadcastReceiver.alertCanceled = true;
     }
 
     /**
@@ -136,65 +141,11 @@ public class GeoFenceTransitionIntentService extends IntentService {
      * If the user clicks the notification, control goes to the MainActivity.
      */
     public void sendNotification(String notificationDetails) {
-        // Create an explicit content Intent that starts the main Activity.
-        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
-        notificationIntent.putExtra("ID_KEY", "geoNotification");
-
-        // Construct a task stack.
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-
-        // Add the main Activity to the task stack as the parent.
-        stackBuilder.addParentStack(MainActivity.class);
-
-        // Push the content Intent onto the stack.
-        stackBuilder.addNextIntent(notificationIntent);
-
-        // Get a PendingIntent containing the entire back stack.
-        PendingIntent notificationPendingIntent =
-                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        // Get a notification builder that's compatible with platform versions >= 4
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-
-        // Define the notification settings.
-        builder.setSmallIcon(R.mipmap.ic_launcher)
-                // In a real app, you may want to use a library like Volley
-                // to decode the Bitmap.
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(),
-                        R.mipmap.ic_launcher))
-                .setColor(Color.RED)
-                .setVibrate(new long[]{0, 1400})
-                .setContentTitle(notificationDetails)
-                .setContentText(getString(R.string.notification_text))
-                .setContentIntent(notificationPendingIntent)
-                .setDeleteIntent(getDeleteIntent());
-
-        // Dismiss notification once the user touches it.
-        builder.setAutoCancel(true);
-
-        // Get an instance of the Notification manager.
-        final NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        // Issue the notification
-        mNotificationManager.notify(0, builder.build());
-
-        // Dismiss notification after a set amount of time.
-        Handler h = new Handler();
-        long delayInMilliseconds = Constants.NOTIFICATION_DISMISS_TIME;
-        h.postDelayed(new Runnable() {
-            public void run() {
-                mNotificationManager.cancel(0);
-                AlertInfo.UpdateAlert(getApplicationContext(), "dismissed_time_gps");
-                Log.d("Niels", "Notification cancelled");
-            }
-        }, delayInMilliseconds);
-    }
-
-    private PendingIntent getDeleteIntent() {
-        Context context = getApplicationContext();
-        Intent intent = new Intent(context, NotificationBroadcastReceiver.class);
-        intent.setAction("user_dismissed_gps");
-        return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent NotifyIntent = new Intent(this, SetGPSAlarmBroadcastReceiver.class); // this is the actual notification
+        NotifyIntent.putExtra("location", notificationDetails);
+        PendingIntent NotifySender = PendingIntent.getBroadcast(this, 0, NotifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), NotifySender); // fire immediately
     }
 
     /**

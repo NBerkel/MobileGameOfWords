@@ -16,8 +16,8 @@ public class Constants {
     public static final float GEOFENCE_RADIUS_IN_METERS = 70;
     public static final int NOTIFICATION_TIMEOUT = 7200000; // 120 minutes.
     //public static final int NOTIFICATION_TIMEOUT = 18000; // 3 minutes.
-    //public static final int NOTIFICATION_DISMISS_TIME = 900000; // 15 minutes.
-    public static final int NOTIFICATION_DISMISS_TIME = 120000; // 2 minutes.
+    public static final int NOTIFICATION_DISMISS_TIME = 900000; // 15 minutes.
+    //public static final int NOTIFICATION_DISMISS_TIME = 60000; // 1 minute.
 
     /**
      * Map for storing information about Oulu landmarks.
@@ -26,7 +26,7 @@ public class Constants {
 
     static {
         OULU_LANDMARKS.put("University", new LatLng(65.059294, 25.467327));
-        OULU_LANDMARKS.put("University office", new LatLng(65.0576855, 25.4685685));
+        OULU_LANDMARKS.put("University office", new LatLng(65.057890, 25.469935));
         OULU_LANDMARKS.put("Downtown", new LatLng(65.011782, 25.470193));
         OULU_LANDMARKS.put("Railway station", new LatLng(65.010543, 25.483737));
         OULU_LANDMARKS.put("Park", new LatLng(65.017738, 25.475968));

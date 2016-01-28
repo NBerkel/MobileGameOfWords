@@ -15,6 +15,11 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +28,6 @@ import java.util.Map;
  */
 public class AlertInfo {
     static String endTime;
-    private static Context mContext;
 
     public static void UpdateAlert(Context context, String event) {
         try {
@@ -34,7 +38,28 @@ public class AlertInfo {
             Long tsLong = System.currentTimeMillis() / 1000;
             endTime = tsLong.toString();
 
-            String nickname = HomeScreen.getNickname();
+            //String nickname = HomeScreen.getNickname();
+            String nickname = GameplayStats.getNickname();
+
+            if (nickname == null) {
+                BufferedReader input;
+                File file;
+                try {
+                    file = new File(context.getFilesDir(), "nickname");
+
+                    input = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+                    String line;
+                    StringBuffer buffer = new StringBuffer();
+                    while ((line = input.readLine()) != null) {
+                        buffer.append(line);
+                    }
+                    Log.d("Niels", "File content " + buffer.toString());
+                    nickname = buffer.toString();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
             int gamified = GameplayStats.getGamified();
 
             final JSONObject alert = new JSONObject();

@@ -27,9 +27,18 @@ public class GameplayStats {
     private static Context context;
     private static int score;
     private static int entry;
+    private static String nickname;
 
     public GameplayStats(Context _context) {
         context = _context;
+    }
+
+    public static String getNickname() {
+        return nickname;
+    }
+
+    public static void setNickname(String _nickname) {
+        nickname = _nickname;
     }
 
     public static String getWord() {

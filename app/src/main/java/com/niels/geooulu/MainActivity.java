@@ -46,6 +46,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Map;
 
+import static com.niels.geooulu.AlertInfo.UpdateAlert;
+
 public class MainActivity extends AppCompatActivity
         implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
 
@@ -86,6 +88,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        checkUsername();
+
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         ll = new GameplayStats.GeoUpdateHandler();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -109,8 +113,6 @@ public class MainActivity extends AppCompatActivity
         }
 
         setContentView(R.layout.activity_main);
-
-        checkUsername();
 
         Fragment fragment = new HomeScreen();
         Log.d("NielsMain", "New HomeScreen created");
@@ -174,16 +176,15 @@ public class MainActivity extends AppCompatActivity
             if (getIntent().getExtras().containsKey("ID_KEY")) {
                 GameplayStats gameplayStats = new GameplayStats(getApplicationContext());
 
-                //if (getIntent().getStringExtra("ID_KEY") == "geoNotification") {
                 if (getIntent().getStringExtra("ID_KEY").contains("geoNotification")) {
                     gameplayStats.setEntry(3);
                     //launched from geo notification
-                    AlertInfo.UpdateAlert(getApplicationContext(), "user_opened_gps");
+                    UpdateAlert(getApplicationContext(), "user_opened_gps");
                     Log.d("Niels", "geo notification launch");
                 } else {
                     gameplayStats.setEntry(2);
                     //launched from time notification
-                    AlertInfo.UpdateAlert(getApplicationContext(), "user_opened_time");
+                    UpdateAlert(getApplicationContext(), "user_opened_time");
                     Log.d("Niels", "time notification launch");
                 }
                 getIntent().removeExtra("ID_KEY");
@@ -437,7 +438,7 @@ public class MainActivity extends AppCompatActivity
                             // Set the expiration duration of the geofence. This geofence gets automatically removed after this period of time.
                     .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_HOURS)
                             // Set the transition types of interest
-                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
                             //.setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT)
                             // Create the geofence.
                     .build());
