@@ -120,6 +120,12 @@ public class gameplay extends Fragment {
             e.printStackTrace();
         }
 
+        GoogleAnalytics analytics = GoogleAnalytics.getInstance(getContext());
+        Tracker mTracker;
+        mTracker = analytics.newTracker(R.xml.global_tracker);
+        mTracker.setScreenName("Image~" + "gameplay_nongamified");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+
         return view;
     }
 

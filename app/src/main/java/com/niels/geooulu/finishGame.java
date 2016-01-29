@@ -15,6 +15,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import org.json.JSONException;
 
 /**
@@ -92,6 +96,12 @@ public class finishGame extends Fragment {
                 gameplayStats.setEntry(4);
             }
         });
+
+        GoogleAnalytics analytics = GoogleAnalytics.getInstance(getContext());
+        Tracker mTracker;
+        mTracker = analytics.newTracker(R.xml.global_tracker);
+        mTracker.setScreenName("Image~" + "finishGame");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
         // Inflate the layout for this fragment
         return view;

@@ -25,6 +25,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -54,6 +57,7 @@ public class MainActivity extends AppCompatActivity
     protected static final String TAG = "MainActivity";
     public static JSONArray sliderWords = new JSONArray();
     public static boolean isActivityRunning;
+    public static Tracker mTracker;
     static String ip = "http://gow.ddns.net/";
     final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
     public GameplayStats gameplayStats;
@@ -117,6 +121,11 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment = new HomeScreen();
         Log.d("NielsMain", "New HomeScreen created");
 
+        GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+        mTracker = analytics.newTracker(R.xml.global_tracker);
+        mTracker.setScreenName("Image~" + "MainActivity");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.container_body, fragment);
@@ -130,6 +139,8 @@ public class MainActivity extends AppCompatActivity
         addGeofenceList(this);
 
         getCriteria();
+
+
     }
 
     @Override
@@ -342,6 +353,16 @@ public class MainActivity extends AppCompatActivity
             logSecurityException(securityException);
         }
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
     }
 

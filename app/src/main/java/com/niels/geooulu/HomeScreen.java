@@ -29,6 +29,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -71,6 +74,12 @@ public class HomeScreen extends Fragment {
         dbGetLeaderboard.getLeaderboard(getContext());
 
         welcomeTextView = (TextView) view.findViewById(R.id.welcomeTextView);
+
+        GoogleAnalytics analytics = GoogleAnalytics.getInstance(getContext());
+        Tracker mTracker;
+        mTracker = analytics.newTracker(R.xml.global_tracker);
+        mTracker.setScreenName("Image~" + "HomeScreen");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
         if (nickname != null) {
             welcomeTextView.setText("Welcome back " + nickname + "!");

@@ -23,6 +23,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -88,6 +91,12 @@ public class inputLocRelevantWord extends Fragment {
                 }
             }
         });
+
+        GoogleAnalytics analytics = GoogleAnalytics.getInstance(getContext());
+        Tracker mTracker;
+        mTracker = analytics.newTracker(R.xml.global_tracker);
+        mTracker.setScreenName("Image~" + "inputLocRelevantWord");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
         return view;
     }

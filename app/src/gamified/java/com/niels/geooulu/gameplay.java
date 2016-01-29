@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -58,6 +62,7 @@ public class gameplay extends Fragment {
     Animations anim = new Animations();
     boolean answerProvided = false;
     int currentWord = 0;
+    DisplayMetrics displaymetrics;
     Animation fromAtoB;
     JSONArray wordJsonRatings = new JSONArray();
     Animation.AnimationListener animationListener = new Animation.AnimationListener() {
@@ -122,6 +127,9 @@ public class gameplay extends Fragment {
         leftCircleImageView = (ImageView) view.findViewById(R.id.leftCircleImageView);
         rightCircleImageView = (ImageView) view.findViewById(R.id.rightCircleImageView);
 
+        displaymetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+
         words = new ArrayList<>();
         wordsUserRating = new ArrayList<>();
 
@@ -145,6 +153,12 @@ public class gameplay extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        GoogleAnalytics analytics = GoogleAnalytics.getInstance(getContext());
+        Tracker mTracker;
+        mTracker = analytics.newTracker(R.xml.global_tracker);
+        mTracker.setScreenName("Image~" + "gameplay_gamified");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
         return view;
     }
@@ -347,7 +361,7 @@ public class gameplay extends Fragment {
 
     private void moveText() {
         float to_x = currentGameWord.getX();
-        float to_y = currentGameWord.getY() - 900;
+        float to_y = currentGameWord.getY() - (displaymetrics.heightPixels - (displaymetrics.heightPixels / 6));
 
         float x_from = currentGameWord.getX();
         float y_from = currentGameWord.getY();
