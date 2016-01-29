@@ -28,10 +28,12 @@
     <string name="highscoresTitle">Highscores</string>
     <string name="inputRelevantWordInstructions">Before you begin, please enter a word that you believe characterises well the space you are currently in:</string>
     <string name="sliderInstructions">Please adjust the slider values so that they best describe the space you are currently in.</string>
-    <string name="finishedScore">Game finished - your final score is:</string>
-    <string name="finishedNoScore">Game finished.</string>
+    <string name="finishedScore">Finished! Your final score is:</string>
+    <string name="finishedNoScore">Finished!</string>
     <string name="calculatingScore">Calculating score ...</string>
-    <string name="playAgain">Play again!</string>
+    <string name="playAgain">Return to start!</string>
     <string name="loadingCurrentWord"></string>
-    <string name="title_activity_second">SecondActivity</string>
+    <string name="gameplayNoWords">You have run out of playable words for this location. Please try a different location or come back later!</string>
+
+    <string name="title_activity_second">Second activity</string>
 </resources>

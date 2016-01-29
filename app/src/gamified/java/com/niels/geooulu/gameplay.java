@@ -62,7 +62,8 @@ public class gameplay extends Fragment {
     JSONArray wordJsonRatings = new JSONArray();
     Animation.AnimationListener animationListener = new Animation.AnimationListener() {
         @Override
-        public void onAnimationStart(Animation animation) { }
+        public void onAnimationStart(Animation animation) {
+        }
 
         @Override
         public void onAnimationRepeat(Animation animation) {
@@ -70,7 +71,7 @@ public class gameplay extends Fragment {
 
         @Override
         public void onAnimationEnd(Animation animation) {
-            if(answerProvided == false) {
+            if (answerProvided == false) {
                 //add "none" to wordlist (instead of the usual relevant/irrelevant vote)
                 wordsUserRating.add("none");
             }
@@ -107,7 +108,8 @@ public class gameplay extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) { }
+        if (getArguments() != null) {
+        }
     }
 
     @Override
@@ -158,39 +160,68 @@ public class gameplay extends Fragment {
         RequestQueue queue = Volley.newRequestQueue(getContext());
         String url = MainActivity.getIP() + "getwords.php";
 
-        // Collect word list
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        setGameWords(response);
-                    }
-                }, new Response.ErrorListener() {
+        StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("GeoOulu getwords", response);
+                setGameWords(response);
+            }
+        }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("GeoOulu", String.valueOf(error));
+                VolleyLog.d("GeoOulu", "Error: " + error.getMessage());
+                Log.d("GeoOulu", "" + error.getMessage() + "," + error.toString());
             }
-        });
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("data", String.valueOf(dataJSON));
+                return params;
+            }
+
+            /**
+             * Passing some request headers *
+             */
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        queue.add(sr);
     }
+
 
     private void setGameWords(String response) {
         try {
             JSONArray strJson = new JSONArray(response);
-            for (int i = 0; i < strJson.length(); i++) {
-                JSONObject object = strJson.getJSONObject(i);
+            if (strJson.length() >= 5) {
+                for (int i = 0; i < strJson.length(); i++) {
+                    JSONObject object = strJson.getJSONObject(i);
 
-                JSONObject word = new JSONObject();
-                word.put("word", object.getString("word"));
-                word.put("number_of_times_voted_relevant", object.getString("number_of_times_voted_relevant"));
-                word.put("number_of_times_voted_irrelevant", object.getString("number_of_times_voted_irrelevant"));
-                words.add(object.getString("word"));
+                    JSONObject word = new JSONObject();
+                    word.put("word", object.getString("word"));
+                    word.put("number_of_times_voted_relevant", object.getString("number_of_times_voted_relevant"));
+                    word.put("number_of_times_voted_irrelevant", object.getString("number_of_times_voted_irrelevant"));
+                    words.add(object.getString("word"));
+                }
+                startGame();
+            } else {
+                // Return home
+                Fragment fragment = new GameplayNoWords();
+
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.container_body, fragment);
+                fragmentTransaction.commit();
+
             }
-            startGame();
         } catch (JSONException e) {
             e.printStackTrace();
-            //TODO block person from starting game?
         }
     }
 
@@ -263,8 +294,8 @@ public class gameplay extends Fragment {
         for (int i = 0; i < words.size(); i++) {
             JSONObject wordAnswer = new JSONObject();
 
-            wordAnswer.put("word",words.get(i));
-            wordAnswer.put("rating",wordsUserRating.get(i));
+            wordAnswer.put("word", words.get(i));
+            wordAnswer.put("rating", wordsUserRating.get(i));
 
             wordJsonRatings.put(wordAnswer);
         }
@@ -304,8 +335,8 @@ public class gameplay extends Fragment {
             /** Passing some request headers * */
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String,String> params = new HashMap<String, String>();
-                params.put("Content-Type","application/x-www-form-urlencoded");
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
                 return params;
             }
         };

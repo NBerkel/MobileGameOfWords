@@ -154,19 +154,29 @@ public class gameplay extends Fragment {
     private void setGameWords(String response) {
         try {
             JSONArray strJson = new JSONArray(response);
-            for (int i = 0; i < strJson.length(); i++) {
-                JSONObject object = strJson.getJSONObject(i);
+            if (strJson.length() >= 5) {
+                for (int i = 0; i < strJson.length(); i++) {
+                    JSONObject object = strJson.getJSONObject(i);
 
-                JSONObject word = new JSONObject();
-                word.put("word", object.getString("word"));
-                word.put("number_of_times_voted_relevant", object.getString("number_of_times_voted_relevant"));
-                word.put("number_of_times_voted_irrelevant", object.getString("number_of_times_voted_irrelevant"));
-                words.add(object.getString("word"));
+                    JSONObject word = new JSONObject();
+                    word.put("word", object.getString("word"));
+                    word.put("number_of_times_voted_relevant", object.getString("number_of_times_voted_relevant"));
+                    word.put("number_of_times_voted_irrelevant", object.getString("number_of_times_voted_irrelevant"));
+                    words.add(object.getString("word"));
+                }
+                startGame();
+            } else {
+                // Return home
+                Fragment fragment = new GameplayNoWords();
+
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.container_body, fragment);
+                fragmentTransaction.commit();
+
             }
-            startGame();
         } catch (JSONException e) {
             e.printStackTrace();
-            //TODO block person from starting game?
         }
     }
 

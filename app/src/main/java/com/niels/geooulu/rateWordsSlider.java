@@ -91,6 +91,11 @@ public class rateWordsSlider extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_rate_words_slider, container, false);
 
+        // If person second time in this location - no sliders.
+        if (GameplayStats.entry == 4) {
+            startGame();
+        }
+
         sliderLayoutHolder = (LinearLayout) view.findViewById(R.id.sliderLayoutHolder);
 
         JSONArray sliderWords = MainActivity.sliderWords;
@@ -196,7 +201,7 @@ public class rateWordsSlider extends Fragment {
                 params.put("json_ratings", sliderAnswersString);
                 params.put("user_id", HomeScreen.getNickname());
                 Location GPS_Location = GameplayStats.getGPSLocation();
-                params.put("meta", GPS_Location.toString());
+                params.put("meta", GPS_Location.toString() + " - Zone:" + GameplayStats.getGPSZone());
                 return params;
             }
         };
@@ -217,6 +222,7 @@ public class rateWordsSlider extends Fragment {
 
     private void addSlider(JSONObject jsonObj) throws JSONException {
         String criterion_body = jsonObj.getString("criterion_body");
+        String criterion_details = jsonObj.getString("criterion_details");
 
         TextView criterion = new TextView(getActivity());
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -232,7 +238,7 @@ public class rateWordsSlider extends Fragment {
         SeekBar seekbar = new SeekBar(getActivity());
         seekbar.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         seekbar.setMax(100);
-        seekbar.setProgress(50); //TODO implement "no-change" detected?
+        seekbar.setProgress(50);
 
         sliderLayoutHolder.addView(seekbar);
 
@@ -240,19 +246,12 @@ public class rateWordsSlider extends Fragment {
         RelativeLayout.LayoutParams textVHLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         sliderLayoutHolder.addView(textViewHolder, textVHLayoutParams);
 
-        TextView irrelevant = new TextView(getActivity());
+        TextView details = new TextView(getActivity());
         RelativeLayout.LayoutParams irrelevantLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        irrelevantLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        irrelevant.setText("Highly irrelevant");
-        irrelevant.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        textViewHolder.addView(irrelevant, irrelevantLayoutParams);
-
-        TextView relevant = new TextView(getActivity());
-        RelativeLayout.LayoutParams relevantLabelLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        relevantLabelLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        relevant.setText("Highly relevant");
-        relevant.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        textViewHolder.addView(relevant, relevantLabelLayoutParams);
+        irrelevantLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        details.setText(criterion_details);
+        details.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        textViewHolder.addView(details, irrelevantLayoutParams);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

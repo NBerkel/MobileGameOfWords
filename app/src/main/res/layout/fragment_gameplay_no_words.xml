@@ -2,14 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.niels.geooulu.rateWordsSlider">
+    tools:context="com.niels.geooulu.GameplayNoWords">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/sliderLayoutHolder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -21,11 +20,22 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
                 android:gravity="center_horizontal"
                 android:paddingTop="10dp"
-                android:text="@string/sliderInstructions"
+                android:text="@string/gameplayNoWords"
                 android:textSize="18dp" />
+
+            <Button
+                android:id="@+id/backMainScreenButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="24dp"
+                android:width="120dp"
+                android:text="@string/playAgain" />
         </LinearLayout>
 
     </ScrollView>
+
 </FrameLayout>

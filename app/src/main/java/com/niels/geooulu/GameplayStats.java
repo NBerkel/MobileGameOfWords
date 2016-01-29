@@ -16,6 +16,7 @@ import android.util.Log;
 public class GameplayStats {
 
     private static final int TWO_MINUTES = 1000 * 60 * 2;
+    public static int entry;
     static Location gps_location;
     static float gps_accuracy;
     static String gps_zone;
@@ -26,7 +27,6 @@ public class GameplayStats {
     static String endTime;
     private static Context context;
     private static int score;
-    private static int entry;
     private static String nickname;
 
     public GameplayStats(Context _context) {

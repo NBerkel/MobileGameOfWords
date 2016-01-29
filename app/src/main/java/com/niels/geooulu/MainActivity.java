@@ -273,6 +273,7 @@ public class MainActivity extends AppCompatActivity
                 JSONObject word = new JSONObject();
                 word.put("criterion_id", object.getString("criterion_id"));
                 word.put("criterion_body", object.getString("criterion_body"));
+                word.put("criterion_details", object.getString("criterion_details"));
                 sliderWords.put(word);
             }
         } catch (JSONException e) {

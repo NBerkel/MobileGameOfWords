@@ -44,7 +44,7 @@ public class CalculateScore {
         StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.d("GeoOulu", response);
+                Log.d("GeoOulu score response", response);
 
                 Intent setPoints = new Intent("ACTION_GAME_POINTS");
                 setPoints.putExtra("score", Integer.parseInt(response));

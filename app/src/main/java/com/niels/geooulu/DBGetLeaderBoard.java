@@ -69,7 +69,7 @@ public class DBGetLeaderBoard {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("GeoOulu", String.valueOf(error));
+                Log.d("GeoOulu onErrorResponse", String.valueOf(error));
             }
         });
         // Add the request to the RequestQueue.

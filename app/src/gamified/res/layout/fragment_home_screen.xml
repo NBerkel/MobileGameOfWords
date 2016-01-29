@@ -23,7 +23,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="34dp"
             android:adjustViewBounds="true"
-            android:src="@drawable/gow_logo" />
+            android:src="@drawable/logo" />
 
         <TextView
             android:id="@+id/welcomeTextView"

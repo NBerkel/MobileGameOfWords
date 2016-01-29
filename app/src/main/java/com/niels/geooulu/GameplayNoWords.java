@@ -1,8 +1,6 @@
 package com.niels.geooulu;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,30 +11,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
-
-import org.json.JSONException;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link finishGame.OnFragmentInteractionListener} interface
+ * {@link GameplayNoWords.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link finishGame#newInstance} factory method to
+ * Use the {@link GameplayNoWords#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class finishGame extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    static TextView pointsTextView;
-    static CalculateScore scorer;
-    Button backMainScreenBtn;
+public class GameplayNoWords extends Fragment {
+
     View view;
+    Button backMainScreenBtn;
     private OnFragmentInteractionListener mListener;
 
-    public finishGame() {
+    public GameplayNoWords() {
         // Required empty public constructor
     }
 
@@ -46,14 +36,12 @@ public class finishGame extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment finishGame.
+     * @return A new instance of fragment GameplayNoWords.
      */
     // TODO: Rename and change types and number of parameters
-    public static finishGame newInstance(String param1, String param2) {
-        finishGame fragment = new finishGame();
+    public static GameplayNoWords newInstance(String param1, String param2) {
+        GameplayNoWords fragment = new GameplayNoWords();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -61,15 +49,16 @@ public class finishGame extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        scorer = new CalculateScore(getContext());
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_finish_game, container, false);
 
-        pointsTextView = (TextView) view.findViewById(R.id.pointsTextView);
+        view = inflater.inflate(R.layout.fragment_gameplay_no_words, container, false);
+
 
         backMainScreenBtn = (Button) view.findViewById(R.id.backMainScreenButton);
 
@@ -93,7 +82,6 @@ public class finishGame extends Fragment {
             }
         });
 
-        // Inflate the layout for this fragment
         return view;
     }
 
@@ -107,6 +95,7 @@ public class finishGame extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
     }
+
 
     @Override
     public void onDetach() {
@@ -127,21 +116,5 @@ public class finishGame extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-    }
-
-    public static class PointsListener extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            int score = intent.getIntExtra("score", 0);
-            if (pointsTextView != null) pointsTextView.setText(score + " points!");
-
-            // Submit GameplayStats
-            SendGameplayStats sendGameplayStats = new SendGameplayStats(context);
-            try {
-                sendGameplayStats.UpdateStatsDB();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }
