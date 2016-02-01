@@ -14,8 +14,10 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
         String action = intent.getAction();
         if (action.equals("user_dismissed_time")) {
             AlertInfo.UpdateAlert(context, "user_dismissed_time");
+            GameplayStats.alertCanceled = true;
         } else if (action.equals("user_dismissed_gps")) {
             AlertInfo.UpdateAlert(context, "user_dismissed_gps");
+            GameplayStats.alertCanceled = true;
         }
     }
 }

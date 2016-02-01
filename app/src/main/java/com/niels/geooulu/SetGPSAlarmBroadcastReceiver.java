@@ -10,18 +10,15 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
 
 /**
  * Created by niels on 25/01/16.
  */
 public class SetGPSAlarmBroadcastReceiver extends BroadcastReceiver {
 
-    public static boolean alertCanceled = false;
-
     @Override
     public void onReceive(final Context context, Intent intent) {
-        alertCanceled = false;
+        GameplayStats.alertCanceled = false;
         // Create an explicit content Intent that starts the main Activity.
         Intent notificationIntent = new Intent(context, MainActivity.class);
         notificationIntent.putExtra("ID_KEY", "geoNotification");
@@ -66,7 +63,6 @@ public class SetGPSAlarmBroadcastReceiver extends BroadcastReceiver {
         // Issue the notification
         if (MainActivity.isActivityRunning != true) {
             AlertInfo.UpdateAlert(context, "notified_gps");
-            Log.d("Niels", "notified gps, alert canceled " + String.valueOf(alertCanceled));
             mNotificationManager.notify(0, builder.build());
 
             // Dismiss notification after a set amount of time.
@@ -74,9 +70,8 @@ public class SetGPSAlarmBroadcastReceiver extends BroadcastReceiver {
             long delayInMilliseconds = Constants.NOTIFICATION_DISMISS_TIME;
             h.postDelayed(new Runnable() {
                 public void run() {
-                    Log.d("Niels", "alert canceled " + String.valueOf(alertCanceled));
                     AlertInfo.UpdateAlert(context, "time_gps_dismissed");
-                    alertCanceled = true;
+                    GameplayStats.alertCanceled = true;
                     mNotificationManager.cancelAll();
                 }
             }, delayInMilliseconds);
@@ -84,11 +79,9 @@ public class SetGPSAlarmBroadcastReceiver extends BroadcastReceiver {
     }
 
     private PendingIntent getDeleteIntent(Context context) {
-        Log.d("Niels", "getDeleteIntent" + String.valueOf(alertCanceled));
-
         Intent intent = new Intent(context, NotificationBroadcastReceiver.class);
         intent.setAction("user_dismissed_gps");
-        alertCanceled = true;
+        GameplayStats.alertCanceled = true;
         return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 }

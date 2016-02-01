@@ -27,6 +27,8 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -73,7 +75,12 @@ public class inputLocRelevantWord extends Fragment {
                     try {
                         GameplayStats gameplayStats = new GameplayStats(getContext());
                         gameplayStats.setWord(locRelevantWord);
-                        sendNewWord(locRelevantWord);
+                        String gps_zone = GameplayStats.getGPSZone();
+
+                        final JSONObject wordInfo = new JSONObject();
+                        wordInfo.put("word", locRelevantWord);
+                        wordInfo.put("gps_zone", gps_zone);
+                        sendNewWord(wordInfo);
                     } catch (Exception e) {}
 
 
@@ -101,7 +108,7 @@ public class inputLocRelevantWord extends Fragment {
         return view;
     }
 
-    private void sendNewWord(final String locRelevantWord) {
+    private void sendNewWord(final JSONObject locRelevantWord) {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(getContext());
         String url = MainActivity.getIP() + "addnewword.php";
@@ -121,7 +128,7 @@ public class inputLocRelevantWord extends Fragment {
             @Override
             protected Map<String, String> getParams() {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("dataString", locRelevantWord);
+                params.put("wordInfo", String.valueOf(locRelevantWord));
                 return params;
             }
 

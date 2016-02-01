@@ -16,11 +16,9 @@ import java.util.Calendar;
 
 public class SetAlarmBroadcastReceiver extends BroadcastReceiver {
 
-    static boolean alertCanceled = false;
-
     @Override
     public void onReceive(final Context context, Intent intent) {
-        alertCanceled = false;
+        GameplayStats.alertCanceled = false;
         Log.d("Niels", "SetAlarmBroadcastReceiver");
 
         // Create an explicit content Intent that starts the main Activity.
@@ -66,6 +64,7 @@ public class SetAlarmBroadcastReceiver extends BroadcastReceiver {
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         if (MainActivity.isActivityRunning != true && hour <= 21 && hour >= 8) {
             AlertInfo.UpdateAlert(context, "notified_time");
+            GameplayStats.alertCanceled = false;
             mNotificationManager.notify(0, builder.build());
 
             // Dismiss notification after a set amount of time.
@@ -74,7 +73,7 @@ public class SetAlarmBroadcastReceiver extends BroadcastReceiver {
             h.postDelayed(new Runnable() {
                 public void run() {
                     AlertInfo.UpdateAlert(context, "dismissed_time");
-                    alertCanceled = true;
+                    GameplayStats.alertCanceled = true;
                     mNotificationManager.cancelAll();
                 }
             }, delayInMilliseconds);
@@ -84,7 +83,7 @@ public class SetAlarmBroadcastReceiver extends BroadcastReceiver {
     private PendingIntent getDeleteIntent(Context context) {
         Intent intent = new Intent(context, NotificationBroadcastReceiver.class);
         intent.setAction("user_dismissed_time");
-        alertCanceled = true;
+        GameplayStats.alertCanceled = true;
         return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 }

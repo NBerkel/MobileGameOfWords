@@ -114,12 +114,17 @@ public class DBGetLeaderBoard {
             TextView userNickname = new TextView(activity);
             userScoreLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_START);
             userNickname.setText(nickname);
-            leaderboardUsersLayout.addView(userNickname, userScoreLayoutParams);
+
+            if (leaderboardUsersLayout != null) {
+                leaderboardUsersLayout.addView(userNickname, userScoreLayoutParams);
+            }
 
             TextView userScore = new TextView(activity);
             userScoreLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_START);
             userScore.setText(score);
-            leaderboardScoresLayout.addView(userScore, userScoreLayoutParams);
+            if (leaderboardUsersLayout != null) {
+                leaderboardScoresLayout.addView(userScore, userScoreLayoutParams);
+            }
         }
     }
 

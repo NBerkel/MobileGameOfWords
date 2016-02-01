@@ -17,6 +17,7 @@ public class GameplayStats {
 
     private static final int TWO_MINUTES = 1000 * 60 * 2;
     public static int entry;
+    public static boolean alertCanceled;
     static Location gps_location;
     static float gps_accuracy;
     static String gps_zone;

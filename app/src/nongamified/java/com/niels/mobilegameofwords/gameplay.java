@@ -256,6 +256,7 @@ public class gameplay extends Fragment {
 
             wordAnswer.put("word", words.get(i));
             wordAnswer.put("rating", wordsUserRating.get(i));
+            wordAnswer.put("gps_zone", GameplayStats.getGPSZone());
 
             wordJsonRatings.put(wordAnswer);
         }

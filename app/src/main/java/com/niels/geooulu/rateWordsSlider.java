@@ -108,7 +108,7 @@ public class rateWordsSlider extends Fragment {
         }
 
         Button startGameBtn = new Button(getActivity());
-        startGameBtn.setText("Start Game");
+        startGameBtn.setText("Continue");
         LinearLayout.LayoutParams buttonLayoutParams;
         buttonLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         buttonLayoutParams.gravity = Gravity.CENTER_HORIZONTAL;

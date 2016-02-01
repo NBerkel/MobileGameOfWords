@@ -76,7 +76,7 @@ public class GeoFenceTransitionIntentService extends IntentService {
             // Send notification and log the transition details (only if application is not in foreground)
             if (MainActivity.isActivityRunning != true) {
                 sendNotification("Entered " + geofencingEvent.getTriggeringGeofences().get(0).getRequestId());
-                SetGPSAlarmBroadcastReceiver.alertCanceled = false;
+                GameplayStats.alertCanceled = false;
                 Log.d("Niels", geofenceTransitionDetails);
             }
             // Set zone
@@ -85,7 +85,7 @@ public class GeoFenceTransitionIntentService extends IntentService {
             // User has left the geofence
             Log.d("Niels", "exit geofence");
             // dismiss notification
-            if (SetGPSAlarmBroadcastReceiver.alertCanceled == false) {
+            if (GameplayStats.alertCanceled == false) {
                 dismissNotification();
             }
             // remove set zone
@@ -105,10 +105,10 @@ public class GeoFenceTransitionIntentService extends IntentService {
         mNotificationManager.cancel(0);
 
         // Only store in database if notification has not already been cancelled.
-        if (SetGPSAlarmBroadcastReceiver.alertCanceled == false) {
+        if (GameplayStats.alertCanceled == false) {
             AlertInfo.UpdateAlert(getApplicationContext(), "dismissed_gps");
+            GameplayStats.alertCanceled = true;
         }
-        SetGPSAlarmBroadcastReceiver.alertCanceled = true;
     }
 
     /**

@@ -139,8 +139,6 @@ public class MainActivity extends AppCompatActivity
         addGeofenceList(this);
 
         getCriteria();
-
-
     }
 
     @Override
