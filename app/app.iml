@@ -62,13 +62,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/gamified/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/gamified/jni" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/gamified/rs" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestGamified/res" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestGamified/resources" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestGamified/assets" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestGamified/aidl" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestGamified/java" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestGamified/jni" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src/androidTestGamified/rs" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/testGamified/res" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/testGamified/resources" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/testGamified/assets" type="java-test-resource" />
@@ -76,6 +69,13 @@
       <sourceFolder url="file://$MODULE_DIR$/src/testGamified/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/testGamified/jni" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/testGamified/rs" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestGamified/res" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestGamified/resources" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestGamified/assets" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestGamified/aidl" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestGamified/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestGamified/jni" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/androidTestGamified/rs" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/debug/res" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/debug/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/debug/assets" type="java-resource" />
@@ -111,6 +111,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/jni" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/rs" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/build/.DS_Store" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/assets" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/blame" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/builds" />

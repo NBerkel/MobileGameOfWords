@@ -27,7 +27,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|bottom"
         android:text="@string/loadingCurrentWord"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="25sp" />
 
     <TextView
         android:id="@+id/wordProgress"
@@ -35,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="left|bottom"
         android:layout_margin="6dp"
-        android:text="Word 1/10"
+        android:text="Loading words"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView

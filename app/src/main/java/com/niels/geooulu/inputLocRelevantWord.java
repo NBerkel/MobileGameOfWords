@@ -80,6 +80,10 @@ public class inputLocRelevantWord extends Fragment {
                         final JSONObject wordInfo = new JSONObject();
                         wordInfo.put("word", locRelevantWord);
                         wordInfo.put("gps_zone", gps_zone);
+                        wordInfo.put("nickname", HomeScreen.getNickname());
+                        Long tsLong = System.currentTimeMillis() / 1000;
+                        String timestamp = tsLong.toString();
+                        wordInfo.put("timestamp", timestamp);
                         sendNewWord(wordInfo);
                     } catch (Exception e) {}
 

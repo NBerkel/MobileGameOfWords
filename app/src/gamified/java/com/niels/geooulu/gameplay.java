@@ -362,7 +362,8 @@ public class gameplay extends Fragment {
 
     private void moveText() {
         float to_x = currentGameWord.getX();
-        float to_y = currentGameWord.getY() - (displaymetrics.heightPixels - (displaymetrics.heightPixels / 6));
+        //float to_y = currentGameWord.getY() - (displaymetrics.heightPixels - (displaymetrics.heightPixels / 6));
+        float to_y = currentGameWord.getY() - displaymetrics.heightPixels;
 
         float x_from = currentGameWord.getX();
         float y_from = currentGameWord.getY();

@@ -232,6 +232,7 @@ public class rateWordsSlider extends Fragment {
         criterion.setText(criterion_body);
         criterion.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
         criterion.setGravity(Gravity.CENTER_HORIZONTAL);
+        criterion.setPadding(0, 16, 0, 0);
 
         sliderLayoutHolder.addView(criterion, params);
 
@@ -250,7 +251,8 @@ public class rateWordsSlider extends Fragment {
         RelativeLayout.LayoutParams irrelevantLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         irrelevantLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
         details.setText(criterion_details);
-        details.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        details.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
+        details.setGravity(Gravity.CENTER);
         textViewHolder.addView(details, irrelevantLayoutParams);
     }
 
