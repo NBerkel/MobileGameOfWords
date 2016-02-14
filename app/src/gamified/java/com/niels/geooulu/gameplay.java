@@ -1,6 +1,7 @@
 package com.niels.geooulu;
 
 import android.content.Context;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -77,8 +78,16 @@ public class gameplay extends Fragment {
         @Override
         public void onAnimationEnd(Animation animation) {
             if (answerProvided == false) {
+                Log.d("Niels", "No answer provided");
                 //add "none" to wordlist (instead of the usual relevant/irrelevant vote)
                 wordsUserRating.add("none");
+
+                SendLog sendLog = new SendLog();
+                try {
+                    sendLog.UpdateLogDB(words.get(currentWord), 2, getContext());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
             currentWord++;
             Log.d("Niels", "animation end");
@@ -166,10 +175,13 @@ public class gameplay extends Fragment {
     private void getGameWords() throws JSONException {
         String nickname = HomeScreen.getNickname();
         String gps_zone = GameplayStats.getGPSZone();
+        Location gps_location = GameplayStats.getGPSLocation();
 
         final JSONObject dataJSON = new JSONObject();
         dataJSON.put("nickname", nickname);
         dataJSON.put("gps_zone", gps_zone);
+        dataJSON.put("gps_location_lat", gps_location.getLatitude());
+        dataJSON.put("gps_location_lng", gps_location.getLongitude());
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
         String url = MainActivity.getIP() + "getwords.php";
@@ -214,7 +226,7 @@ public class gameplay extends Fragment {
         try {
             JSONArray strJson = new JSONArray(response);
             if (strJson.length() >= 5) {
-                for (int i = 0; i < strJson.length(); i++) {
+                for (int i = 0; i < strJson.length() && i < 10; i++) {
                     JSONObject object = strJson.getJSONObject(i);
 
                     JSONObject word = new JSONObject();
@@ -243,14 +255,14 @@ public class gameplay extends Fragment {
         if (words.size() != 0) {
             SendLog sendLog = new SendLog();
             try {
-                sendLog.UpdateLogDB(words.get(currentWord), false, getContext());
+                sendLog.UpdateLogDB(words.get(currentWord), 0, getContext());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
             answerProvided = true;
             wordsUserRating.add("irrelevant");
-            anim.scaleView(leftCircleImageView, 1f, 1.2f, 400);
+            anim.scaleView(leftCircleImageView, 1f, 1f, 0);
         }
     }
 
@@ -258,14 +270,14 @@ public class gameplay extends Fragment {
         if (words.size() != 0) {
             SendLog sendLog = new SendLog();
             try {
-                sendLog.UpdateLogDB(words.get(currentWord), true, getContext());
+                sendLog.UpdateLogDB(words.get(currentWord), 1, getContext());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
             answerProvided = true;
             wordsUserRating.add("relevant");
-            anim.scaleView(rightCircleImageView, 1f, 1.2f, 400);
+            anim.scaleView(rightCircleImageView, 1f, 1f, 0);
         }
     }
 

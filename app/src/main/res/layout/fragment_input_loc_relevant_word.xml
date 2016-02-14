@@ -29,6 +29,7 @@
             android:layout_margin="50dp"
             android:gravity="center_horizontal"
             android:inputType="textCapSentences"
+            android:maxLength="16"
             android:maxLines="1"
             android:singleLine="true" />
 

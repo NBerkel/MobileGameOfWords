@@ -2,6 +2,7 @@ package com.niels.geooulu;
 
 import android.Manifest;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity
      * Used to persist application state about whether geofences were added.
      */
     private SharedPreferences mSharedPreferences;
+    private NotificationReceiver nReceiver;
 
     public static String getIP() {
         return ip;
@@ -463,5 +465,14 @@ public class MainActivity extends AppCompatActivity
                             // Create the geofence.
                     .build());
         }
+    }
+
+    private class NotificationReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String temp = intent.getStringExtra("notification_event");
+            Log.d("NotificationReceiver", temp);
+        }
+
     }
 }

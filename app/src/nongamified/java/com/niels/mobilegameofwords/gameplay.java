@@ -1,6 +1,7 @@
 package com.niels.geooulu;
 
 import android.content.Context;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,6 +22,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -132,36 +137,57 @@ public class gameplay extends Fragment {
     private void getGameWords() throws JSONException {
         String nickname = HomeScreen.getNickname();
         String gps_zone = GameplayStats.getGPSZone();
+        Location gps_location = GameplayStats.getGPSLocation();
 
         final JSONObject dataJSON = new JSONObject();
         dataJSON.put("nickname", nickname);
         dataJSON.put("gps_zone", gps_zone);
+        dataJSON.put("gps_location_lat", gps_location.getLatitude());
+        dataJSON.put("gps_location_lng", gps_location.getLongitude());
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
         String url = MainActivity.getIP() + "getwords.php";
 
-        // Collect word list
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        setGameWords(response);
-                    }
-                }, new Response.ErrorListener() {
+        StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d("GeoOulu getwords", response);
+                setGameWords(response);
+            }
+        }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("GeoOulu", String.valueOf(error));
+                VolleyLog.d("GeoOulu", "Error: " + error.getMessage());
+                Log.d("GeoOulu", "" + error.getMessage() + "," + error.toString());
             }
-        });
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("data", String.valueOf(dataJSON));
+                return params;
+            }
+
+            /**
+             * Passing some request headers *
+             */
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/x-www-form-urlencoded");
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        queue.add(sr);
     }
 
     private void setGameWords(String response) {
         try {
             JSONArray strJson = new JSONArray(response);
             if (strJson.length() >= 5) {
-                for (int i = 0; i < strJson.length(); i++) {
+                for (int i = 0; i < strJson.length() && i < 10; i++) {
                     JSONObject object = strJson.getJSONObject(i);
 
                     JSONObject word = new JSONObject();
@@ -190,7 +216,7 @@ public class gameplay extends Fragment {
         if (words.size() != 0) {
             SendLog sendLog = new SendLog();
             try {
-                sendLog.UpdateLogDB(words.get(currentWord), false, getContext());
+                sendLog.UpdateLogDB(words.get(currentWord), 0, getContext());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -205,7 +231,7 @@ public class gameplay extends Fragment {
         if (words.size() != 0) {
             SendLog sendLog = new SendLog();
             try {
-                sendLog.UpdateLogDB(words.get(currentWord), true, getContext());
+                sendLog.UpdateLogDB(words.get(currentWord), 1, getContext());
             } catch (JSONException e) {
                 e.printStackTrace();
             }

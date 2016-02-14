@@ -1,5 +1,6 @@
 package com.niels.geooulu;
 
+import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -7,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
@@ -65,16 +65,25 @@ public class SetGPSAlarmBroadcastReceiver extends BroadcastReceiver {
             AlertInfo.UpdateAlert(context, "notified_gps");
             mNotificationManager.notify(0, builder.build());
 
-            // Dismiss notification after a set amount of time.
-            Handler h = new Handler();
+
             long delayInMilliseconds = Constants.NOTIFICATION_DISMISS_TIME;
-            h.postDelayed(new Runnable() {
-                public void run() {
-                    AlertInfo.UpdateAlert(context, "time_gps_dismissed");
-                    GameplayStats.alertCanceled = true;
-                    mNotificationManager.cancelAll();
-                }
-            }, delayInMilliseconds);
+            // Dismiss notification after a set amount of time.
+            Intent myIntent = new Intent(context, MyReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, myIntent, 0);
+
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + delayInMilliseconds, pendingIntent);
+
+//            // Dismiss notification after a set amount of time.
+//            Handler h = new Handler();
+//            long delayInMilliseconds = Constants.NOTIFICATION_DISMISS_TIME;
+//            h.postDelayed(new Runnable() {
+//                public void run() {
+//                    AlertInfo.UpdateAlert(context, "time_gps_dismissed");
+//                    mNotificationManager.cancelAll();
+//                    GameplayStats.alertCanceled = true;
+//                }
+//            }, delayInMilliseconds);
         }
     }
 

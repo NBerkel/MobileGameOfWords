@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".GeoOulu"
@@ -17,6 +18,10 @@
         android:theme="@android:style/Theme.NoTitleBar">
         <service android:name=".GeoFenceTransitionIntentService" />
         <service android:name=".NotificationService" />
+        <service
+            android:name="com.google.android.gms.analytics.AnalyticsService"
+            android:enabled="true"
+            android:exported="false" />
 
         <activity
             android:name=".MainActivity"
@@ -44,6 +49,9 @@
                 <action android:name="notification_cancelled" />
             </intent-filter>
         </receiver>
+
+        <receiver android:name=".MyReceiver" />
+        <receiver android:name=".MyReceiverGPS" />
 
         <activity
             android:name=".app.SecondActivity"

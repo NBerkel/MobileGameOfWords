@@ -23,7 +23,7 @@ import java.util.Map;
  * Created by niels on 18/01/16.
  */
 public class SendLog {
-    public void UpdateLogDB(String word, Boolean vote, Context context) throws JSONException {
+    public void UpdateLogDB(String word, int vote, Context context) throws JSONException {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(context);
 

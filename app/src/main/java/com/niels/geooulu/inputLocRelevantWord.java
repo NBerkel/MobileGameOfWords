@@ -1,6 +1,7 @@
 package com.niels.geooulu;
 
 import android.content.Context;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -76,11 +77,19 @@ public class inputLocRelevantWord extends Fragment {
                         GameplayStats gameplayStats = new GameplayStats(getContext());
                         gameplayStats.setWord(locRelevantWord);
                         String gps_zone = GameplayStats.getGPSZone();
+                        String nickname = HomeScreen.getNickname();
+                        Location gps_location = GameplayStats.getGPSLocation();
+                        float gps_accuracy = GameplayStats.getGPSAccuracy();
+                        String gps_location_string = gps_location.getLatitude() + "," + gps_location.getLongitude();
 
                         final JSONObject wordInfo = new JSONObject();
                         wordInfo.put("word", locRelevantWord);
                         wordInfo.put("gps_zone", gps_zone);
-                        wordInfo.put("nickname", HomeScreen.getNickname());
+                        wordInfo.put("gps_location_lat", gps_location.getLatitude());
+                        wordInfo.put("gps_location_lng", gps_location.getLongitude());
+                        wordInfo.put("gps_location", gps_location_string);
+                        wordInfo.put("gps_accuracy", gps_accuracy);
+                        wordInfo.put("nickname", nickname);
                         Long tsLong = System.currentTimeMillis() / 1000;
                         String timestamp = tsLong.toString();
                         wordInfo.put("timestamp", timestamp);
@@ -112,7 +121,7 @@ public class inputLocRelevantWord extends Fragment {
         return view;
     }
 
-    private void sendNewWord(final JSONObject locRelevantWord) {
+    private void sendNewWord(final JSONObject wordInfo) {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(getContext());
         String url = MainActivity.getIP() + "addnewword.php";
@@ -132,7 +141,7 @@ public class inputLocRelevantWord extends Fragment {
             @Override
             protected Map<String, String> getParams() {
                 HashMap<String, String> params = new HashMap<String, String>();
-                params.put("wordInfo", String.valueOf(locRelevantWord));
+                params.put("wordInfo", String.valueOf(wordInfo));
                 return params;
             }
 

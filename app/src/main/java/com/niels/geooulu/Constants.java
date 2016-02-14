@@ -13,7 +13,7 @@ public class Constants {
     public static final String GEOFENCES_ADDED_KEY = PACKAGE_NAME + ".GEOFENCES_ADDED_KEY";
     public static final long GEOFENCE_EXPIRATION_IN_HOURS = -1; // No expiration
     public static final int GEOFENCES_LOITERING_DELAY = 3000; // 3 seconds.
-    public static final float GEOFENCE_RADIUS_IN_METERS = 75;
+    public static final float GEOFENCE_RADIUS_IN_METERS = 100;
     public static final int NOTIFICATION_TIMEOUT = 7200000; // 120 minutes.
     //public static final int NOTIFICATION_TIMEOUT = 18000; // 3 minutes.
     public static final int NOTIFICATION_DISMISS_TIME = 900000; // 15 minutes.
